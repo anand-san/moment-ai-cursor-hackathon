@@ -20,6 +20,7 @@ export default function Session() {
   const [session, setSession] = useState<SessionWithId | null>(null);
   const [analysis, setAnalysis] = useState<Analysis | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Fetch session data
@@ -31,18 +32,24 @@ export default function Session() {
         const sessionData = await getSession(id);
         setSession(sessionData);
 
+        // Analysis should already exist since we come from summary screen
+        // But handle the case where it doesn't exist
         if (sessionData.analysis) {
           setAnalysis(sessionData.analysis);
           setIsLoading(false);
         } else {
-          // Analysis not ready yet, trigger it and poll
+          // This shouldn't happen if flow is correct, but handle gracefully
+          console.warn('⚠️ Analysis not found, triggering analysis...');
+          setIsAnalyzing(true);
           const analysisData = await analyzeSession(id);
           setAnalysis(analysisData);
+          setIsAnalyzing(false);
           setIsLoading(false);
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load session');
         setIsLoading(false);
+        setIsAnalyzing(false);
       }
     };
 
@@ -72,8 +79,18 @@ export default function Session() {
     navigate(`/session/${id}/result`);
   }, [id, navigate]);
 
-  if (isLoading) {
+  // Only show analyzing screen if we're actually analyzing (not just loading)
+  if (isAnalyzing) {
     return <AnalyzingScreen />;
+  }
+
+  // Show simple loading state if just fetching (analysis should already exist)
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-muted-foreground">Loading...</div>
+      </div>
+    );
   }
 
   if (error || !session || !analysis) {
