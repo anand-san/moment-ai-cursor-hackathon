@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { TipItem } from '@/components/tips/TipItem';
+import { IosTipCard } from '@/components/ios';
 import { FullScreenLoader } from '@/components/loader';
 import { getValuableTips } from '@/api/sessions';
-import { Home, BookOpen, AlertCircle, Inbox } from 'lucide-react';
+import { AlertCircle, Inbox } from 'lucide-react';
 import type { ValuableTip } from '@sandilya-stack/shared/types';
 import { motion } from 'framer-motion';
 
@@ -30,7 +28,7 @@ export default function TipsLibrary() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-6">
+      <div className="min-h-screen flex items-center justify-center">
         <FullScreenLoader />
       </div>
     );
@@ -38,56 +36,38 @@ export default function TipsLibrary() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-6">
+      <div className="min-h-screen flex flex-col items-center justify-center p-6 pb-[calc(90px+env(safe-area-inset-bottom))]">
         <div className="flex items-center gap-2 text-destructive mb-4">
           <AlertCircle className="h-6 w-6" />
           <span className="text-lg">{error}</span>
         </div>
-        <Link to="/">
-          <Button variant="outline" className="gap-2">
-            <Home className="h-4 w-4" />
-            Back to Home
-          </Button>
-        </Link>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col p-6 max-w-lg mx-auto">
-      {/* Back button */}
-      <div className="mb-6">
-        <Link to="/">
-          <Button variant="ghost" size="sm" className="gap-2">
-            <Home className="h-4 w-4" />
-            Home
-          </Button>
-        </Link>
-      </div>
-
+    <div className="min-h-screen flex flex-col p-4 pt-[max(1rem,env(safe-area-inset-top))] pb-[calc(90px+env(safe-area-inset-bottom))] max-w-[480px] mx-auto bg-background">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         className="mb-8"
       >
-        <div className="flex items-center gap-2 mb-2">
-          <BookOpen className="h-8 w-8 text-primary" />
-          <h1 className="text-2xl font-bold">Your Helpful Tips Library</h1>
-        </div>
-        <p className="text-muted-foreground">
-          All the tips you found helpful across your sessions.
+        <h1 className="text-[34px] font-bold leading-[41px] tracking-[0.37px] mb-2">
+          Meine Tipps
+        </h1>
+        <p className="text-[17px] text-muted-foreground">
+          Alle hilfreichen Tipps aus deinen Sessions.
         </p>
       </motion.div>
 
       {/* Tips list */}
       {tips.length > 0 ? (
-        <div className="space-y-4">
+        <div className="flex flex-col gap-3">
           {tips.map((tip, index) => (
-            <TipItem
+            <IosTipCard
               key={`${tip.sessionId}-${tip.id}`}
               tip={tip}
-              showContext
               index={index}
             />
           ))}
@@ -98,18 +78,13 @@ export default function TipsLibrary() {
           animate={{ opacity: 1 }}
           className="flex-1 flex flex-col items-center justify-center text-center py-12"
         >
-          <Inbox className="h-16 w-16 text-muted-foreground/50 mb-4" />
-          <h2 className="text-xl font-medium mb-2">No tips saved yet</h2>
-          <p className="text-muted-foreground mb-6 max-w-xs">
-            Start a brain dump session and swipe right on tips that resonate
-            with you.
+          <Inbox className="h-16 w-16 text-muted-foreground/30 mb-4" />
+          <h2 className="text-xl font-semibold mb-2">
+            Noch keine Tipps gespeichert
+          </h2>
+          <p className="text-muted-foreground max-w-[280px]">
+            Starte eine Session und markiere hilfreiche Tipps.
           </p>
-          <Link to="/">
-            <Button className="gap-2">
-              <Home className="h-4 w-4" />
-              Start a Session
-            </Button>
-          </Link>
         </motion.div>
       )}
 
@@ -121,8 +96,8 @@ export default function TipsLibrary() {
           transition={{ delay: 0.3 }}
           className="mt-8 pt-6 border-t border-border text-center text-sm text-muted-foreground"
         >
-          <p>
-            {tips.length} helpful tip{tips.length > 1 ? 's' : ''} saved
+          <p className="m-0">
+            {tips.length} Tipp{tips.length > 1 ? 's' : ''} gespeichert
           </p>
         </motion.div>
       )}
