@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { motion, useMotionValue, useTransform, PanInfo } from 'framer-motion';
 import type { Tip } from '@sandilya-stack/shared/types';
 import { ThumbsUp, ThumbsDown } from 'lucide-react';
@@ -11,6 +12,9 @@ interface TipCardProps {
 const SWIPE_THRESHOLD = 100;
 
 export function TipCard({ tip, onSwipe, isTop }: TipCardProps) {
+  const [exitDirection, setExitDirection] = useState<'left' | 'right' | null>(
+    null,
+  );
   const x = useMotionValue(0);
 
   // Transform x position to rotation (tilt effect)
@@ -33,8 +37,10 @@ export function TipCard({ tip, onSwipe, isTop }: TipCardProps) {
 
   const handleDragEnd = (_: unknown, info: PanInfo) => {
     if (info.offset.x > SWIPE_THRESHOLD) {
+      setExitDirection('right');
       onSwipe('right');
     } else if (info.offset.x < -SWIPE_THRESHOLD) {
+      setExitDirection('left');
       onSwipe('left');
     }
   };
@@ -58,7 +64,7 @@ export function TipCard({ tip, onSwipe, isTop }: TipCardProps) {
       initial={{ scale: isTop ? 1 : 0.95, y: isTop ? 0 : 10 }}
       animate={{ scale: isTop ? 1 : 0.95, y: isTop ? 0 : 10 }}
       exit={{
-        x: x.get() > 0 ? 300 : -300,
+        x: exitDirection === 'right' ? 300 : -300,
         opacity: 0,
         transition: { duration: 0.2 },
       }}
