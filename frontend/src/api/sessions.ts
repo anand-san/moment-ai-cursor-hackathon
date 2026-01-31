@@ -5,6 +5,7 @@ import type {
   GetSessionResponse,
   SwipeResponse,
   GetValuableTipsResponse,
+  GetAllSessionsResponse,
 } from '@sandilya-stack/shared/types';
 
 export async function createSession(
@@ -85,6 +86,16 @@ export async function getValuableTips(): Promise<GetValuableTipsResponse> {
 
   if (!response.ok) {
     throw new Error('Failed to get valuable tips');
+  }
+
+  return response.json();
+}
+
+export async function getAllSessions(): Promise<GetAllSessionsResponse> {
+  const response = await api.sessions.$get();
+
+  if (!response.ok) {
+    throw new Error('Failed to get sessions');
   }
 
   return response.json();

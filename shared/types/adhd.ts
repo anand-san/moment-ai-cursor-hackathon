@@ -174,6 +174,24 @@ export const getValuableTipsResponseSchema = z.object({
 
 export type GetValuableTipsResponse = z.infer<typeof getValuableTipsResponseSchema>;
 
+// Session summary (for listing sessions)
+export const sessionSummarySchema = z.object({
+  id: z.string(),
+  text: z.string(),
+  createdAt: z.string(),
+  hasAnalysis: z.boolean(),
+  helpfulTipsCount: z.number(),
+});
+
+export type SessionSummary = z.infer<typeof sessionSummarySchema>;
+
+// Get all sessions response
+export const getAllSessionsResponseSchema = z.object({
+  sessions: z.array(sessionSummarySchema),
+});
+
+export type GetAllSessionsResponse = z.infer<typeof getAllSessionsResponseSchema>;
+
 // Route parameter schemas
 export const sessionIdParamSchema = z.object({
   sessionId: z.string().min(1),

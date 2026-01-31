@@ -3,6 +3,7 @@ import { zValidator } from '@hono/zod-validator';
 import {
   createSession,
   getSession,
+  getAllSessions,
   updateSessionAnalysis,
   updateTipSwipe,
   regenerateTips,
@@ -17,6 +18,15 @@ import {
 } from '@sandilya-stack/shared/types';
 
 export const sessionsRoute = new Hono()
+  // Get all sessions
+  .get('/', async c => {
+    const userId = c.get('user').uid;
+
+    const sessions = await getAllSessions({ userId });
+
+    return c.json({ sessions });
+  })
+
   // Create session (save brain dump)
   .post('/', zValidator('json', createSessionRequestSchema), async c => {
     const userId = c.get('user').uid;

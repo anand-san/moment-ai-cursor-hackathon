@@ -42,6 +42,16 @@ export const firestore = {
       }
       return createNewDocRef(name);
     },
+    get: async () => {
+      const results = await queryDocs(name);
+      return {
+        docs: results.map(r => ({
+          id: r.id,
+          exists: true,
+          data: () => r.data,
+        })),
+      };
+    },
     where: (field: string, op: WhereClause['op'], value: unknown) => ({
       get: async () => {
         const results = await queryDocs(name, { field, op, value });
@@ -60,6 +70,16 @@ export const firestore = {
           return createDocRef<T>(name, id);
         }
         return createNewDocRef<T>(name);
+      },
+      get: async () => {
+        const results = await queryDocs<T>(name);
+        return {
+          docs: results.map(r => ({
+            id: r.id,
+            exists: true,
+            data: () => r.data,
+          })),
+        };
       },
       where: (field: string, op: WhereClause['op'], value: unknown) => ({
         get: async () => {

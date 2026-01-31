@@ -12,6 +12,7 @@ const Home = lazy(() => import('./pages/Home'));
 const Session = lazy(() => import('./pages/Session'));
 const SessionResult = lazy(() => import('./pages/SessionResult'));
 const TipsLibrary = lazy(() => import('./pages/TipsLibrary'));
+const SessionsHistory = lazy(() => import('./pages/SessionsHistory'));
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
             <Route path="session/:id" element={<Session />} />
             <Route path="session/:id/result" element={<SessionResult />} />
             <Route path="tips" element={<TipsLibrary />} />
+            <Route path="sessions" element={<SessionsHistory />} />
           </Route>
           <Route path="*" element={<Navigate to={'/'} />} />
         </Routes>

@@ -4,6 +4,7 @@ import type { SessionDocRaw, TipDoc } from './types';
 import type {
   Analysis,
   SessionWithId,
+  SessionSummary,
   SwipeDirection,
   TipTag,
   ValuableTip,
@@ -153,10 +154,8 @@ export async function regenerateTips(input: {
 export async function getValuableTips(input: {
   userId: string;
 }): Promise<ValuableTip[]> {
-  // Get all sessions for the user
-  const snap = await sessionsCollection(input.userId)
-    .where('analysis', '!=', null)
-    .get();
+  // Get all sessions for the user (filter for analysis in memory)
+  const snap = await sessionsCollection(input.userId).get();
 
   const valuableTips: ValuableTip[] = [];
 
@@ -197,4 +196,46 @@ export async function getValuableTips(input: {
   }
 
   return valuableTips;
+}
+
+export async function getAllSessions(input: {
+  userId: string;
+}): Promise<SessionSummary[]> {
+  const snap = await sessionsCollection(input.userId).get();
+
+  const sessions: SessionSummary[] = [];
+
+  for (const doc of snap.docs) {
+    const data = doc.data() as SessionDocRaw;
+
+    // Count helpful tips (right-swiped)
+    let helpfulTipsCount = 0;
+
+    if (data.analysis) {
+      helpfulTipsCount += data.analysis.tips.filter(
+        tip => tip.swipeDirection === 'right',
+      ).length;
+    }
+
+    for (const batch of data.previousTips) {
+      helpfulTipsCount += batch.tips.filter(
+        tip => tip.swipeDirection === 'right',
+      ).length;
+    }
+
+    sessions.push({
+      id: doc.id,
+      text: data.text,
+      createdAt: data.createdAt.toDate().toISOString(),
+      hasAnalysis: data.analysis !== null,
+      helpfulTipsCount,
+    });
+  }
+
+  // Sort by createdAt descending (newest first)
+  sessions.sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+  );
+
+  return sessions;
 }

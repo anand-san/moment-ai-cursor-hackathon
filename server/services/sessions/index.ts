@@ -1,6 +1,7 @@
 export {
   createSession,
   getSession,
+  getAllSessions,
   updateSessionAnalysis,
   updateTipSwipe,
   regenerateTips,

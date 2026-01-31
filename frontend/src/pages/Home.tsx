@@ -8,7 +8,7 @@ import {
 import { VoiceInput } from '@/components/brain-dump/VoiceInput';
 import { createSession, analyzeSession } from '@/api/sessions';
 import { useAuth } from '@/context/auth/AuthContextProvider';
-import { BookOpen, Brain, Sparkles } from 'lucide-react';
+import { BookOpen, Brain, Sparkles, Clock } from 'lucide-react';
 
 export default function Home() {
   const { user } = useAuth();
@@ -80,8 +80,14 @@ export default function Home() {
         {/* Text input (always visible, receives voice transcript) */}
         <TextInput ref={textInputRef} onSubmit={handleSubmit} />
 
-        {/* Tips library link */}
-        <div className="mt-8 pt-8 border-t border-border w-full">
+        {/* Navigation links */}
+        <div className="mt-8 pt-8 border-t border-border w-full space-y-2">
+          <Link to="/sessions">
+            <Button variant="ghost" className="w-full gap-2">
+              <Clock className="h-5 w-5" />
+              View Session History
+            </Button>
+          </Link>
           <Link to="/tips">
             <Button variant="ghost" className="w-full gap-2">
               <BookOpen className="h-5 w-5" />
