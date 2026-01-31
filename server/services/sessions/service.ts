@@ -1,6 +1,6 @@
 import { Timestamp } from '../firebase';
 import { sessionDocRef, newSessionDocRef } from './refs';
-import type { SessionDocRaw } from './types';
+import type { SessionDocRaw, TipDoc } from './types';
 import type {
   Analysis,
   SessionWithId,
@@ -48,10 +48,12 @@ export async function getSession(input: {
     text: data.text,
     createdAt: data.createdAt.toDate().toISOString(),
     analysis: data.analysis,
-    previousTips: data.previousTips.map(batch => ({
-      generatedAt: batch.generatedAt.toDate().toISOString(),
-      tips: batch.tips,
-    })),
+    previousTips: data.previousTips.map(
+      (batch: SessionDocRaw['previousTips'][number]) => ({
+        generatedAt: batch.generatedAt.toDate().toISOString(),
+        tips: batch.tips,
+      }),
+    ),
   };
 }
 
@@ -90,11 +92,15 @@ export async function updateTipSwipe(input: {
   if (!current || !current.analysis) return { success: false };
 
   // Find the tip in current analysis
-  const tipIndex = current.analysis.tips.findIndex(t => t.id === input.tipId);
+  const tipIndex = current.analysis.tips.findIndex(
+    (t: TipDoc) => t.id === input.tipId,
+  );
   if (tipIndex === -1) {
     // Check in previousTips
     for (const batch of current.previousTips) {
-      const prevTipIndex = batch.tips.findIndex(t => t.id === input.tipId);
+      const prevTipIndex = batch.tips.findIndex(
+        (t: TipDoc) => t.id === input.tipId,
+      );
       if (prevTipIndex !== -1) {
         batch.tips[prevTipIndex].swipeDirection = input.direction;
         await docRef.set(current);

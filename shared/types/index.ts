@@ -1,3 +1,1 @@
-export * from "./sampleSchema";
-export * from "./todos";
-export * from "./adhd";
+export * from './adhd';

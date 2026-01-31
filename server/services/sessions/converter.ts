@@ -1,4 +1,4 @@
-import type { QueryDocumentSnapshot } from '../firestoreDemo/queryTypes';
+import type { QueryDocumentSnapshot } from '../firestore/queryTypes';
 import type { SessionDocRaw } from './types';
 
 export interface FirestoreDataConverter<T> {

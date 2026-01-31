@@ -1,4 +1,4 @@
-import type { DocumentReference } from '../firestoreDemo/queryTypes';
+import type { DocumentReference } from '../firestore/queryTypes';
 import { firestore } from '../firebase';
 import { preferencesConverter } from './converter';
 import { PREFERENCES_DOC_ID } from './constants';

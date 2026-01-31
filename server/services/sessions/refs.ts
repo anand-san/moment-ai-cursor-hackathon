@@ -1,4 +1,4 @@
-import type { DocumentReference } from '../firestoreDemo/queryTypes';
+import type { DocumentReference } from '../firestore/queryTypes';
 import { sessionsCollection } from './collection';
 import type { SessionDocRaw } from './types';
 

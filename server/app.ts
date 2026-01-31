@@ -2,8 +2,6 @@ import { Hono, type Context } from 'hono';
 import { logger } from 'hono/logger';
 import { cors } from 'hono/cors';
 import { HTTPException } from 'hono/http-exception';
-import { helloRoute } from './routes/hello';
-import { todosRoute } from './routes/todos';
 import { sessionsRoute } from './routes/sessions';
 import { tipsRoute } from './routes/tips';
 import { preferencesRoute } from './routes/preferences';
@@ -50,10 +48,6 @@ app.use(
 const apiRoutes = app
   .get('/health', c => c.text('OK', 201))
   .basePath('/api')
-  .route('/hello', helloRoute)
-  // Note: This is just a sample route to demonstrate basic usage of services while templating
-  .route('/todos', todosRoute)
-  // ADHD Support App routes
   .route('/sessions', sessionsRoute)
   .route('/tips', tipsRoute)
   .route('/preferences', preferencesRoute);
