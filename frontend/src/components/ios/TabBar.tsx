@@ -21,30 +21,30 @@ export function TabBar({
           <button
             className={`tab-item ${activeTab === 'tips' ? 'active' : ''}`}
             onClick={onTipsClick}
-            aria-label="Tipps"
+            aria-label="Tips"
           >
             <LightbulbTabIcon isActive={activeTab === 'tips'} />
-            <span className="tab-label">Tipps</span>
+            <span className="tab-label">Tips</span>
           </button>
 
           {/* Home/AI Assistant Tab */}
           <button
             className={`tab-item ${activeTab === 'home' ? 'active' : ''}`}
             onClick={onHomeClick}
-            aria-label="Assistent"
+            aria-label="Assistant"
           >
             <AIAssistantIcon isActive={activeTab === 'home'} />
-            <span className="tab-label">Assistent</span>
+            <span className="tab-label">Assistant</span>
           </button>
 
           {/* History Tab */}
           <button
             className={`tab-item ${activeTab === 'sessions' ? 'active' : ''}`}
             onClick={onHistoryClick}
-            aria-label="Verlauf"
+            aria-label="History"
           >
             <ClockTabIcon isActive={activeTab === 'sessions'} />
-            <span className="tab-label">Verlauf</span>
+            <span className="tab-label">History</span>
           </button>
         </div>
       </div>

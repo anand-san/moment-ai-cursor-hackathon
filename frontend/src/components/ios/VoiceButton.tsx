@@ -89,7 +89,7 @@ export function VoiceButton({
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}
         disabled={disabled}
-        aria-label="Aufnahme starten. Zum Sprechen gedrückt halten."
+        aria-label="Start recording. Hold to speak."
         aria-pressed={isRecording}
       >
         {isRecording ? <WaveformIcon /> : <MicrophoneIcon />}

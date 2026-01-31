@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { EmpathyResponse } from '@/components/tips/EmpathyResponse';
 import { TipStack } from '@/components/tips/TipStack';
-import { FullScreenLoader } from '@/components/loader';
+import { AnalyzingScreen } from '@/components/ios';
 import {
   getSession,
   analyzeSession,
@@ -73,12 +73,7 @@ export default function Session() {
   }, [id, navigate]);
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-6">
-        <FullScreenLoader />
-        <p className="mt-4 text-muted-foreground">Analyzing your thoughts...</p>
-      </div>
-    );
+    return <AnalyzingScreen />;
   }
 
   if (error || !session || !analysis) {
