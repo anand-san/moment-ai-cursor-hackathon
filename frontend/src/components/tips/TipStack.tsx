@@ -7,7 +7,7 @@ import type { Tip } from '@sandilya-stack/shared/types';
 
 interface TipStackProps {
   tips: Tip[];
-  onSwipe: (tipId: string, direction: 'left' | 'right') => Promise<void>;
+  onSwipe: (tipId: string, direction: 'left' | 'right') => void;
   onRegenerate: () => Promise<void>;
   onComplete: () => void;
 }
@@ -20,32 +20,25 @@ export function TipStack({
 }: TipStackProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isRegenerating, setIsRegenerating] = useState(false);
-  const [isProcessingSwipe, setIsProcessingSwipe] = useState(false);
 
   const remainingTips = tips.slice(currentIndex);
   const progress = tips.length > 0 ? currentIndex / tips.length : 0;
 
   const handleSwipe = useCallback(
-    async (direction: 'left' | 'right') => {
-      if (isProcessingSwipe) return;
-
+    (direction: 'left' | 'right') => {
       const currentTip = tips[currentIndex];
       if (!currentTip) return;
 
-      setIsProcessingSwipe(true);
-      try {
-        await onSwipe(currentTip.id, direction);
-        setCurrentIndex(prev => prev + 1);
+      // Optimistic UI: Update immediately, fire API in background
+      setCurrentIndex(prev => prev + 1);
+      onSwipe(currentTip.id, direction);
 
-        // Check if we've gone through all tips
-        if (currentIndex + 1 >= tips.length) {
-          onComplete();
-        }
-      } finally {
-        setIsProcessingSwipe(false);
+      // Check if we've gone through all tips
+      if (currentIndex + 1 >= tips.length) {
+        onComplete();
       }
     },
-    [currentIndex, tips, onSwipe, onComplete, isProcessingSwipe],
+    [currentIndex, tips, onSwipe, onComplete],
   );
 
   const handleRegenerate = async () => {

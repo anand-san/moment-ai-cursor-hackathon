@@ -34,7 +34,7 @@ const mockTips: Tip[] = [
 describe('TipStack', () => {
   const defaultProps = {
     tips: mockTips,
-    onSwipe: vi.fn().mockResolvedValue(undefined),
+    onSwipe: vi.fn(), // Synchronous - optimistic UI update
     onRegenerate: vi.fn().mockResolvedValue(undefined),
     onComplete: vi.fn(),
   };

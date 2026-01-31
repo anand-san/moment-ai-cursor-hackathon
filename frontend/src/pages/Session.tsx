@@ -50,9 +50,13 @@ export default function Session() {
   }, [id]);
 
   const handleSwipe = useCallback(
-    async (tipId: string, direction: 'left' | 'right') => {
+    (tipId: string, direction: 'left' | 'right') => {
       if (!id) return;
-      await swipeTip(id, tipId, direction);
+      // Fire-and-forget: don't block UI on API response
+      swipeTip(id, tipId, direction).catch(err => {
+        console.error('Failed to record swipe:', err);
+        // Silently fail - the UI has already moved on
+      });
     },
     [id],
   );
