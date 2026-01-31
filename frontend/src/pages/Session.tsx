@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate, Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { EmpathyResponse } from '@/components/tips/EmpathyResponse';
 import { TipStack } from '@/components/tips/TipStack';
@@ -16,16 +16,31 @@ import type { SessionWithId, Analysis } from '@sandilya-stack/shared/types';
 export default function Session() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const [session, setSession] = useState<SessionWithId | null>(null);
-  const [analysis, setAnalysis] = useState<Analysis | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  // Check if session data was passed via navigation state
+  const passedSession = location.state?.session as SessionWithId | undefined;
+  const passedAnalysis = location.state?.analysis as Analysis | undefined;
+
+  const [session, setSession] = useState<SessionWithId | null>(
+    passedSession || null,
+  );
+  const [analysis, setAnalysis] = useState<Analysis | null>(
+    passedAnalysis || null,
+  );
+  const [isLoading, setIsLoading] = useState(!passedSession || !passedAnalysis);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch session data
+  // Fetch session data only if not passed via state
   useEffect(() => {
     if (!id) return;
+
+    // If we already have the data from navigation state, skip fetching
+    if (passedSession && passedAnalysis) {
+      setIsLoading(false);
+      return;
+    }
 
     const fetchSession = async () => {
       try {
@@ -54,7 +69,7 @@ export default function Session() {
     };
 
     fetchSession();
-  }, [id]);
+  }, [id, passedSession, passedAnalysis]);
 
   const handleSwipe = useCallback(
     (tipId: string, direction: 'left' | 'right') => {

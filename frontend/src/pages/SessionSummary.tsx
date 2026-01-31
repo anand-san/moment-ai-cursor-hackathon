@@ -36,8 +36,10 @@ export default function SessionSummary() {
   }, [id]);
 
   const handleConfirm = () => {
-    // Navigate to the tips/cards flow
-    navigate(`/session/${id}/tips`);
+    // Navigate to the tips/cards flow, passing session data to avoid refetch
+    navigate(`/session/${id}/tips`, {
+      state: { session, analysis: session?.analysis },
+    });
   };
 
   const handleClarify = () => {
