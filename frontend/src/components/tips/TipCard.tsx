@@ -1,0 +1,111 @@
+import { motion, useMotionValue, useTransform, PanInfo } from 'framer-motion';
+import type { Tip } from '@sandilya-stack/shared/types';
+import { ThumbsUp, ThumbsDown } from 'lucide-react';
+
+interface TipCardProps {
+  tip: Tip;
+  onSwipe: (direction: 'left' | 'right') => void;
+  isTop: boolean;
+}
+
+const SWIPE_THRESHOLD = 100;
+
+export function TipCard({ tip, onSwipe, isTop }: TipCardProps) {
+  const x = useMotionValue(0);
+
+  // Transform x position to rotation (tilt effect)
+  const rotate = useTransform(x, [-200, 0, 200], [-15, 0, 15]);
+
+  // Transform x position to opacity for feedback indicators
+  const leftOpacity = useTransform(x, [-SWIPE_THRESHOLD, 0], [1, 0]);
+  const rightOpacity = useTransform(x, [0, SWIPE_THRESHOLD], [0, 1]);
+
+  // Background color based on swipe direction
+  const backgroundColor = useTransform(
+    x,
+    [-SWIPE_THRESHOLD, 0, SWIPE_THRESHOLD],
+    [
+      'rgba(239, 68, 68, 0.1)',
+      'rgba(255, 255, 255, 0)',
+      'rgba(34, 197, 94, 0.1)',
+    ],
+  );
+
+  const handleDragEnd = (_: unknown, info: PanInfo) => {
+    if (info.offset.x > SWIPE_THRESHOLD) {
+      onSwipe('right');
+    } else if (info.offset.x < -SWIPE_THRESHOLD) {
+      onSwipe('left');
+    }
+  };
+
+  const categoryColors = {
+    immediate: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
+    habit:
+      'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
+    mindset:
+      'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200',
+  };
+
+  return (
+    <motion.div
+      className={`absolute w-full ${isTop ? 'z-10' : 'z-0'}`}
+      style={{ x, rotate, backgroundColor }}
+      drag={isTop ? 'x' : false}
+      dragConstraints={{ left: 0, right: 0 }}
+      dragElastic={0.9}
+      onDragEnd={handleDragEnd}
+      initial={{ scale: isTop ? 1 : 0.95, y: isTop ? 0 : 10 }}
+      animate={{ scale: isTop ? 1 : 0.95, y: isTop ? 0 : 10 }}
+      exit={{
+        x: x.get() > 0 ? 300 : -300,
+        opacity: 0,
+        transition: { duration: 0.2 },
+      }}
+      whileDrag={{ cursor: 'grabbing' }}
+    >
+      <div className="relative p-6 rounded-2xl border bg-card shadow-lg min-h-[250px] flex flex-col">
+        {/* Swipe feedback indicators */}
+        <motion.div
+          className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-2 text-destructive"
+          style={{ opacity: leftOpacity }}
+        >
+          <ThumbsDown className="h-8 w-8" />
+          <span className="font-semibold">Not helpful</span>
+        </motion.div>
+
+        <motion.div
+          className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2 text-green-600"
+          style={{ opacity: rightOpacity }}
+        >
+          <span className="font-semibold">Helpful</span>
+          <ThumbsUp className="h-8 w-8" />
+        </motion.div>
+
+        {/* Card content */}
+        <div className="flex-1 flex flex-col justify-center items-center text-center px-8">
+          <p className="text-xl font-medium leading-relaxed">{tip.content}</p>
+        </div>
+
+        {/* Tags */}
+        <div className="flex justify-center gap-2 mt-4">
+          <span
+            className={`px-3 py-1 rounded-full text-xs font-medium ${categoryColors[tip.category]}`}
+          >
+            {tip.category}
+          </span>
+          <span className="px-3 py-1 rounded-full text-xs font-medium bg-muted text-muted-foreground">
+            #{tip.tag}
+          </span>
+        </div>
+
+        {/* Swipe hint */}
+        {isTop && (
+          <div className="text-center mt-4 text-sm text-muted-foreground">
+            Swipe left if not helpful, right if helpful
+          </div>
+        )}
+      </div>
+    </motion.div>
+  );
+}

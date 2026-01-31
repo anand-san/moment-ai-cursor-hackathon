@@ -10,6 +10,7 @@ import { authenticateUser } from './middlewares/auth/getUser';
 const app = new Hono();
 
 app.onError((err: unknown, ctx: Context) => {
+  console.log(err);
   if (err instanceof HTTPException) {
     return ctx.json({ error: err.message }, err.status);
   }

@@ -10,8 +10,9 @@ import {
 } from '../mocks/firebase-auth';
 import { AuthProvider } from '@/context/auth/AuthContextProvider';
 
-vi.mock('@/api/hello', () => ({
-  sendHello: vi.fn(),
+vi.mock('@/api/sessions', () => ({
+  createSession: vi.fn(),
+  analyzeSession: vi.fn(),
 }));
 
 function renderLayout() {
@@ -54,11 +55,8 @@ describe('AppLayout - Auth-based Routing', () => {
 
     renderLayout();
 
-    expect(await screen.findByText(/Hello John Doe/)).toBeInTheDocument();
-    expect(screen.getByText(/This is a protected Route/)).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', { name: /Ping Server/i }),
-    ).toBeInTheDocument();
+    expect(await screen.findByText('Brain Dump')).toBeInTheDocument();
+    expect(screen.getByText(/Hey John/)).toBeInTheDocument();
   });
 
   it('should show logout button when user is logged in', async () => {
@@ -66,7 +64,7 @@ describe('AppLayout - Auth-based Routing', () => {
 
     renderLayout();
 
-    await screen.findByText(/Hello Test User/);
+    await screen.findByText('Brain Dump');
 
     const buttons = screen.getAllByRole('button');
     const logoutButton = buttons.find(btn =>
