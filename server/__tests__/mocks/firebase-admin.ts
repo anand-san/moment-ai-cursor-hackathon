@@ -83,7 +83,22 @@ const createCollectionRef = (
         const docs = Object.entries(col)
           .filter(([, data]) => {
             const fieldValue = (data as Record<string, unknown>)[_field];
-            return fieldValue === _value;
+            switch (_op) {
+              case '==':
+                return fieldValue === _value;
+              case '!=':
+                return fieldValue !== _value;
+              case '>':
+                return (fieldValue as number) > (_value as number);
+              case '>=':
+                return (fieldValue as number) >= (_value as number);
+              case '<':
+                return (fieldValue as number) < (_value as number);
+              case '<=':
+                return (fieldValue as number) <= (_value as number);
+              default:
+                return fieldValue === _value;
+            }
           })
           .map(([id, data]) => ({
             id,

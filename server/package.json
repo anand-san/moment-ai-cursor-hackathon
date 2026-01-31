@@ -21,7 +21,8 @@
   },
   "dependencies": {
     "@hono/zod-validator": "^0.7.2",
-    "jose": "^5.2.0"
+    "jose": "^5.2.0",
+    "openai": "^6.17.0"
   },
   "devDependencies": {
     "@types/bun": "latest"

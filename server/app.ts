@@ -4,6 +4,9 @@ import { cors } from 'hono/cors';
 import { HTTPException } from 'hono/http-exception';
 import { helloRoute } from './routes/hello';
 import { todosRoute } from './routes/todos';
+import { sessionsRoute } from './routes/sessions';
+import { tipsRoute } from './routes/tips';
+import { preferencesRoute } from './routes/preferences';
 import env from './env';
 import { authenticateUser } from './middlewares/auth/getUser';
 const app = new Hono();
@@ -49,7 +52,11 @@ const apiRoutes = app
   .basePath('/api')
   .route('/hello', helloRoute)
   // Note: This is just a sample route to demonstrate basic usage of services while templating
-  .route('/todos', todosRoute);
+  .route('/todos', todosRoute)
+  // ADHD Support App routes
+  .route('/sessions', sessionsRoute)
+  .route('/tips', tipsRoute)
+  .route('/preferences', preferencesRoute);
 
 export default app;
 export type ApiRoutes = typeof apiRoutes;

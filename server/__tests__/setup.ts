@@ -1,5 +1,6 @@
 import { mock } from 'bun:test';
 import { mockAuth, mockFirestore, MockTimestamp } from './mocks/firebase-admin';
+import { MockOpenAI } from './mocks/openai';
 
 // Mock the lightweight firebase services
 mock.module('../services/firebase', () => ({
@@ -22,4 +23,9 @@ mock.module('../services/firestoreRest', () => ({
   createDoc: mock(async () => ({ id: 'new-id' })),
   queryDocs: mock(async () => []),
   Timestamp: MockTimestamp,
+}));
+
+// Mock OpenAI
+mock.module('openai', () => ({
+  default: MockOpenAI,
 }));
