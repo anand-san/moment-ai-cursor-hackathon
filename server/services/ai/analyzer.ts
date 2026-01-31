@@ -1,6 +1,8 @@
-import { getOpenAIClient } from './client';
+import { generateText, Output } from 'ai';
+import { z } from 'zod';
+import { openai } from './client';
 import type { Analysis, TagCounts, Tip } from '@sandilya-stack/shared/types';
-import { analysisSchema } from '@sandilya-stack/shared/types';
+import { tipTagSchema, tipCategorySchema } from '@sandilya-stack/shared/types';
 
 const SYSTEM_PROMPT = `You are an empathetic ADHD coach. When given a user's brain dump (stream of consciousness about their current struggle), you will:
 
@@ -26,21 +28,21 @@ Categories:
 The user has these tag preferences (higher = more helpful to them):
 {tagCounts}
 
-Order your tips so preferred tags appear first (higher priority numbers = show later).
+Order your tips so preferred tags appear first (higher priority numbers = show later).`;
 
-Respond ONLY with valid JSON:
-{
-  "empathy": "string",
-  "tips": [
-    {
-      "id": "tip_<number>",
-      "content": "string",
-      "tag": "one of the available tags",
-      "category": "immediate|habit|mindset",
-      "priority": number (1 = show first)
-    }
-  ]
-}`;
+// Schema for AI response (without swipeDirection as it's added later)
+const aiResponseSchema = z.object({
+  empathy: z.string(),
+  tips: z.array(
+    z.object({
+      id: z.string(),
+      content: z.string(),
+      tag: tipTagSchema,
+      category: tipCategorySchema,
+      priority: z.number(),
+    }),
+  ),
+});
 
 function buildSystemPrompt(tagCounts: TagCounts): string {
   const tagCountsStr = Object.entries(tagCounts)
@@ -55,39 +57,26 @@ export async function analyzeText(
   text: string,
   tagCounts: TagCounts,
 ): Promise<Analysis> {
-  const client = getOpenAIClient();
-
-  const response = await client.chat.completions.create({
-    model: 'gpt-4o',
-    messages: [
-      { role: 'system', content: buildSystemPrompt(tagCounts) },
-      { role: 'user', content: text },
-    ],
-    response_format: { type: 'json_object' },
+  const { output } = await generateText({
+    model: openai('gpt-4o'),
+    output: Output.object({ schema: aiResponseSchema }),
+    system: buildSystemPrompt(tagCounts),
+    prompt: text,
     temperature: 0.7,
-    max_tokens: 1000,
   });
 
-  const content = response.choices[0]?.message?.content;
-  if (!content) {
-    throw new Error('No response from OpenAI');
+  if (!output) {
+    throw new Error('No structured output from AI');
   }
 
-  const parsed = JSON.parse(content);
-
   // Add swipeDirection: null to each tip
-  const tipsWithSwipe: Tip[] = parsed.tips.map(
-    (tip: Omit<Tip, 'swipeDirection'>) => ({
-      ...tip,
-      swipeDirection: null,
-    }),
-  );
+  const tipsWithSwipe: Tip[] = output.tips.map(tip => ({
+    ...tip,
+    swipeDirection: null,
+  }));
 
-  const result = {
-    empathy: parsed.empathy,
+  return {
+    empathy: output.empathy,
     tips: tipsWithSwipe,
   };
-
-  // Validate with Zod
-  return analysisSchema.parse(result);
 }

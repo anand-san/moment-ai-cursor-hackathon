@@ -1,13 +1,6 @@
-import OpenAI from 'openai';
+import { createOpenAI } from '@ai-sdk/openai';
 import env from '../../env';
 
-let openaiClient: OpenAI | null = null;
-
-export function getOpenAIClient(): OpenAI {
-  if (!openaiClient) {
-    openaiClient = new OpenAI({
-      apiKey: env.OPENAI_API_KEY,
-    });
-  }
-  return openaiClient;
-}
+export const openai = createOpenAI({
+  apiKey: env.OPENAI_API_KEY,
+});
