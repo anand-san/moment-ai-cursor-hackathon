@@ -31,7 +31,7 @@ export default function Home() {
     stopListening,
     isSupported,
     resetTranscript,
-  } = useSpeechToText({ lang: 'de-DE' });
+  } = useSpeechToText({ lang: 'en-US' });
 
   // Sync recording state with voice context
   useEffect(() => {
@@ -66,9 +66,7 @@ export default function Home() {
     console.log('🎤 handlePressStart called', { isSupported, isProcessing });
     if (!isSupported || isProcessing) {
       if (!isSupported) {
-        toast.error(
-          'Spracherkennung wird in diesem Browser nicht unterstützt.',
-        );
+        toast.error('Speech recognition is not supported in this browser.');
       }
       return;
     }
@@ -104,7 +102,7 @@ export default function Home() {
 
     if (!finalText) {
       console.log('⚠️ No text detected');
-      toast.error('Keine Sprache erkannt. Bitte versuche es erneut.');
+      toast.error('No speech detected. Please try again.');
       setIsProcessing(false);
       setRecordingDuration(0);
       return;
@@ -118,7 +116,7 @@ export default function Home() {
       navigate(`/session/${session.id}`);
     } catch (error) {
       console.error('❌ Failed to create session:', error);
-      toast.error('Etwas ist schief gelaufen. Bitte versuche es erneut.');
+      toast.error('Something went wrong. Please try again.');
       setIsProcessing(false);
       setRecordingDuration(0);
     }
@@ -154,10 +152,10 @@ export default function Home() {
         <button
           className="inline-flex items-center gap-1 p-2 -ml-2 bg-transparent border-none text-primary cursor-pointer min-h-[44px] active:opacity-70"
           onClick={handleBack}
-          aria-label="Zurück"
+          aria-label="Back"
         >
           <ChevronLeft className="h-5 w-5" />
-          <span className="text-[17px]">Zurück</span>
+          <span className="text-[17px]">Back</span>
         </button>
       )}
 
@@ -165,7 +163,7 @@ export default function Home() {
       <div className="flex-1 flex flex-col items-center justify-center text-center gap-4">
         {/* Title */}
         <h1 className="text-[28px] font-bold leading-[34px] tracking-[0.36px] mb-8">
-          Was beschäftigt dich?
+          What's on your mind?
         </h1>
 
         {/* Voice Button - Centered */}
@@ -180,28 +178,32 @@ export default function Home() {
         {/* Hint text */}
         <p className="text-[13px] text-muted-foreground">
           {isListening
-            ? 'Ich höre zu...'
+            ? "I'm listening..."
             : isProcessing
-              ? 'Wird verarbeitet...'
-              : 'Zum Sprechen halten'}
+              ? 'Processing...'
+              : 'Hold to speak'}
         </p>
 
-        {/* Transcript preview */}
-        {(transcript || interimTranscript) && (
-          <div className="max-w-[280px] p-3 px-4 bg-secondary rounded-xl mt-3">
-            <p className="text-[16px] leading-[21px] text-foreground m-0 italic">
-              {transcript || interimTranscript}
-            </p>
-          </div>
-        )}
+        {/* Transcript preview - always reserve space */}
+        <div
+          className="max-w-[280px] p-3 px-4 bg-secondary rounded-xl mt-3 transition-opacity duration-200"
+          style={{
+            minHeight: '48px',
+            opacity: transcript || interimTranscript ? 1 : 0,
+          }}
+        >
+          <p className="text-[16px] leading-[21px] text-foreground m-0 italic">
+            {transcript || interimTranscript || '\u00A0'}
+          </p>
+        </div>
 
         {/* Browser not supported */}
         {!isSupported && (
           <div className="mt-6 p-4 bg-orange-500/10 rounded-xl max-w-[280px]">
             <p className="text-[13px] leading-[18px] text-orange-600 m-0 text-center">
-              Spracherkennung wird in diesem Browser nicht unterstützt.
+              Speech recognition is not supported in this browser.
               <br />
-              Bitte verwende Chrome oder Safari.
+              Please use Chrome or Safari.
             </p>
           </div>
         )}

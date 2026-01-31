@@ -78,10 +78,10 @@ export default function SessionsHistory() {
         className="mb-8"
       >
         <h1 className="text-[34px] font-bold leading-[41px] tracking-[0.37px] mb-2">
-          Verlauf
+          History
         </h1>
         <p className="text-[17px] text-muted-foreground">
-          Deine vergangenen Sessions und Ergebnisse.
+          Your past sessions and results.
         </p>
       </motion.div>
 
@@ -120,7 +120,7 @@ export default function SessionsHistory() {
                         {!session.hasAnalysis && (
                           <span className="flex items-center gap-1 text-orange-600">
                             <Brain className="h-3 w-3" />
-                            Offen
+                            Open
                           </span>
                         )}
                       </div>
@@ -139,9 +139,9 @@ export default function SessionsHistory() {
           className="flex-1 flex flex-col items-center justify-center text-center py-12"
         >
           <Inbox className="h-16 w-16 text-muted-foreground/30 mb-4" />
-          <h2 className="text-xl font-semibold mb-2">Noch keine Sessions</h2>
+          <h2 className="text-xl font-semibold mb-2">No sessions yet</h2>
           <p className="text-muted-foreground max-w-[280px]">
-            Starte deine erste Session um deinen Verlauf zu sehen.
+            Start your first session to see your history.
           </p>
         </motion.div>
       )}

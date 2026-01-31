@@ -54,10 +54,10 @@ export default function TipsLibrary() {
         className="mb-8"
       >
         <h1 className="text-[34px] font-bold leading-[41px] tracking-[0.37px] mb-2">
-          Meine Tipps
+          My Tips
         </h1>
         <p className="text-[17px] text-muted-foreground">
-          Alle hilfreichen Tipps aus deinen Sessions.
+          All helpful tips from your sessions.
         </p>
       </motion.div>
 
@@ -79,11 +79,9 @@ export default function TipsLibrary() {
           className="flex-1 flex flex-col items-center justify-center text-center py-12"
         >
           <Inbox className="h-16 w-16 text-muted-foreground/30 mb-4" />
-          <h2 className="text-xl font-semibold mb-2">
-            Noch keine Tipps gespeichert
-          </h2>
+          <h2 className="text-xl font-semibold mb-2">No tips saved yet</h2>
           <p className="text-muted-foreground max-w-[280px]">
-            Starte eine Session und markiere hilfreiche Tipps.
+            Start a session and mark helpful tips to save them.
           </p>
         </motion.div>
       )}
@@ -97,7 +95,7 @@ export default function TipsLibrary() {
           className="mt-8 pt-6 border-t border-border text-center text-sm text-muted-foreground"
         >
           <p className="m-0">
-            {tips.length} Tipp{tips.length > 1 ? 's' : ''} gespeichert
+            {tips.length} Tip{tips.length > 1 ? 's' : ''} saved
           </p>
         </motion.div>
       )}

@@ -95,7 +95,7 @@ export function SecondaryButton({
   );
 }
 
-// Clock icon for "Vergangene Sessions"
+// Clock icon for "Past Sessions"
 export function ClockIcon() {
   return (
     <svg
@@ -129,7 +129,7 @@ export function ClockIcon() {
   );
 }
 
-// Lightbulb icon for "Meine hilfreichen Tipps"
+// Lightbulb icon for "My Helpful Tips"
 export function LightbulbIcon() {
   return (
     <svg
