@@ -8,7 +8,7 @@ export function preferencesDocRef(
   userId: string,
 ): DocumentReference<PreferencesDocRaw> {
   return firestore
-    .collection(`users/${userId}`)
+    .collection(`users/${userId}/preferences`)
     .withConverter(preferencesConverter)
     .doc(PREFERENCES_DOC_ID) as DocumentReference<PreferencesDocRaw>;
 }

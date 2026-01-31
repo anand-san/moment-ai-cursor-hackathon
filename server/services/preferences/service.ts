@@ -8,8 +8,10 @@ export async function getPreferences(userId: string): Promise<TagCounts> {
   const docRef = preferencesDocRef(userId);
   const snap = await docRef.get();
 
-  if (!snap.exists || !snap.data()) {
-    // Create default preferences if not exists
+  const data = snap.exists ? snap.data() : null;
+
+  // Create default preferences if doc doesn't exist or tagCounts is missing
+  if (!data || !data.tagCounts) {
     const newPrefs: PreferencesDocRaw = {
       tagCounts: { ...defaultTagCounts },
       updatedAt: Timestamp.now(),
@@ -18,8 +20,7 @@ export async function getPreferences(userId: string): Promise<TagCounts> {
     return { ...defaultTagCounts };
   }
 
-  const data = snap.data();
-  return data!.tagCounts;
+  return data.tagCounts;
 }
 
 export async function incrementTag(

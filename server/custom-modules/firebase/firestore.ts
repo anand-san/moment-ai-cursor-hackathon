@@ -435,7 +435,13 @@ export async function queryDocs<T>(
     throw new FirestoreError('invalid-argument', 'Firestore not initialized');
   }
 
-  const url = `https://firestore.googleapis.com/v1/projects/${config.projectId}/databases/(default)/documents:runQuery`;
+  // Parse collection path to handle subcollections
+  // e.g., "users/userId/sessions" -> parent: "users/userId", collectionId: "sessions"
+  const pathParts = collection.split('/');
+  const collectionId = pathParts.pop()!;
+  const parentPath = pathParts.length > 0 ? `/${pathParts.join('/')}` : '';
+
+  const url = `https://firestore.googleapis.com/v1/projects/${config.projectId}/databases/(default)/documents${parentPath}:runQuery`;
 
   const query: {
     structuredQuery: {
@@ -450,7 +456,7 @@ export async function queryDocs<T>(
     };
   } = {
     structuredQuery: {
-      from: [{ collectionId: collection }],
+      from: [{ collectionId }],
     },
   };
 
