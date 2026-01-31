@@ -103,6 +103,7 @@ export default function Home() {
     });
 
     if (!finalText) {
+      console.log('⚠️ No text detected');
       toast.error('Keine Sprache erkannt. Bitte versuche es erneut.');
       setIsProcessing(false);
       setRecordingDuration(0);
@@ -110,9 +111,10 @@ export default function Home() {
     }
 
     try {
-      console.log('🚀 Creating session...');
+      console.log('🚀 Creating session with text:', finalText);
       const session = await createSession(finalText, recordingDuration);
-      console.log('✅ Session created:', session.id);
+      console.log('✅ Session created:', session);
+      console.log('🧭 Navigating to:', `/session/${session.id}`);
       navigate(`/session/${session.id}`);
     } catch (error) {
       console.error('❌ Failed to create session:', error);

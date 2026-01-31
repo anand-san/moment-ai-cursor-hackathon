@@ -19,8 +19,10 @@ export function VoiceButton({
   const [isPressed, setIsPressed] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const pressStartTimeRef = useRef<number>(0);
+  const MIN_PRESS_DURATION = 300; // ms
 
-  // Check for reduced motion preference
+  // Reduced motion preference
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     setPrefersReducedMotion(mediaQuery.matches);
@@ -34,58 +36,58 @@ export function VoiceButton({
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    return `${mins.toString().padStart(2, '0')}:${secs
+      .toString()
+      .padStart(2, '0')}`;
   };
 
   const handlePointerDown = useCallback(
-    (e: React.PointerEvent) => {
-      console.log('👇 VoiceButton PointerDown', { disabled });
-      if (disabled) return;
+    (e: React.PointerEvent<HTMLButtonElement>) => {
+      if (disabled || isPressed) return;
+
       e.preventDefault();
+      e.stopPropagation();
+
+      // Capture pointer so DOM changes don't cancel the press
+      e.currentTarget.setPointerCapture(e.pointerId);
+
+      pressStartTimeRef.current = Date.now();
       setIsPressed(true);
       onPressStart();
     },
-    [disabled, onPressStart],
+    [disabled, isPressed, onPressStart],
   );
 
-  const handlePointerUp = useCallback(() => {
-    console.log('👆 VoiceButton PointerUp', { disabled, isPressed });
-    if (disabled) return;
-    setIsPressed(false);
-    onPressEnd();
-  }, [disabled, onPressEnd]);
+  const handlePointerUp = useCallback(
+    (e: React.PointerEvent<HTMLButtonElement>) => {
+      if (disabled || !isPressed) return;
 
-  const handlePointerLeave = useCallback(() => {
-    console.log('🚪 VoiceButton PointerLeave', { isPressed });
-    if (isPressed) {
+      const pressDuration = Date.now() - pressStartTimeRef.current;
+      if (pressDuration < MIN_PRESS_DURATION) return;
+
+      try {
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      } catch {
+        // no-op: capture may already be released
+      }
+
       setIsPressed(false);
       onPressEnd();
-    }
-  }, [isPressed, onPressEnd]);
+    },
+    [disabled, isPressed, onPressEnd],
+  );
 
   return (
     <div className="voice-button-container">
-      {/* Recording ring animation */}
-      {isRecording && <div className="recording-ring" />}
-
       <button
         ref={buttonRef}
         type="button"
-        className={`voice-button ${isPressed ? 'pressed' : ''} ${isRecording ? 'recording' : ''} ${!prefersReducedMotion && !isRecording ? 'pulse' : ''}`}
+        className={`voice-button ${isPressed ? 'pressed' : ''} ${
+          isRecording ? 'recording' : ''
+        } ${!prefersReducedMotion && !isRecording ? 'pulse' : ''}`}
         onPointerDown={handlePointerDown}
         onPointerUp={handlePointerUp}
-        onPointerLeave={handlePointerLeave}
         onPointerCancel={handlePointerUp}
-        onMouseDown={handlePointerDown}
-        onMouseUp={handlePointerUp}
-        onTouchStart={e => {
-          console.log('📱 Touch Start');
-          handlePointerDown(e as any);
-        }}
-        onTouchEnd={e => {
-          console.log('📱 Touch End');
-          handlePointerUp();
-        }}
         disabled={disabled}
         aria-label="Aufnahme starten. Zum Sprechen gedrückt halten."
         aria-pressed={isRecording}
@@ -93,10 +95,10 @@ export function VoiceButton({
         {isRecording ? <WaveformIcon /> : <MicrophoneIcon />}
       </button>
 
-      {/* Recording timer */}
-      {isRecording && (
-        <div className="recording-timer">{formatTime(recordingDuration)}</div>
-      )}
+      {/* Timer - always reserves space */}
+      <div className="recording-timer">
+        {isRecording ? formatTime(recordingDuration) : '\u00A0'}
+      </div>
 
       <style>{`
         .voice-button-container {
@@ -105,27 +107,6 @@ export function VoiceButton({
           flex-direction: column;
           align-items: center;
           gap: 12px;
-        }
-
-        .recording-ring {
-          position: absolute;
-          width: ${layout.voiceButton + 24}px;
-          height: ${layout.voiceButton + 24}px;
-          border-radius: 50%;
-          border: 3px solid ${colors.primary};
-          opacity: 0.5;
-          animation: pulse-ring 1.5s ease-out infinite;
-        }
-
-        @keyframes pulse-ring {
-          0% {
-            transform: scale(1);
-            opacity: 0.5;
-          }
-          100% {
-            transform: scale(1.3);
-            opacity: 0;
-          }
         }
 
         .voice-button {
@@ -138,7 +119,8 @@ export function VoiceButton({
           align-items: center;
           justify-content: center;
           cursor: pointer;
-          transition: all ${animations.quick.duration} ${animations.quick.easing};
+          transition: all ${animations.quick.duration}
+            ${animations.quick.easing};
           touch-action: manipulation;
           user-select: none;
           -webkit-user-select: none;
@@ -158,11 +140,13 @@ export function VoiceButton({
         }
 
         .voice-button.pulse {
-          animation: idle-pulse ${animations.pulse.duration} ${animations.pulse.easing} infinite;
+          animation: idle-pulse ${animations.pulse.duration}
+            ${animations.pulse.easing} infinite;
         }
 
         @keyframes idle-pulse {
-          0%, 100% {
+          0%,
+          100% {
             transform: scale(1);
           }
           50% {
@@ -189,16 +173,18 @@ export function VoiceButton({
           font-weight: 500;
           color: ${colors.label.secondary};
           font-variant-numeric: tabular-nums;
+          min-height: 20px;
+          opacity: 1;
+          transition: opacity 150ms ease-out;
         }
 
-        /* Reduced motion */
+        .recording-timer:empty {
+          opacity: 0;
+        }
+
         @media (prefers-reduced-motion: reduce) {
           .voice-button.pulse {
             animation: none;
-          }
-          .recording-ring {
-            animation: none;
-            opacity: 0.3;
           }
         }
       `}</style>
