@@ -5,7 +5,7 @@ import {
   TextInput,
   type TextInputRef,
 } from '@/components/brain-dump/TextInput';
-import { createSession, analyzeSession } from '@/api/sessions';
+import { createSession } from '@/api/sessions';
 import { useSpeechToText } from '@/hooks/useSpeechToText';
 import { Mic, AudioLines, Keyboard } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -55,7 +55,6 @@ export default function Home() {
   const handleSubmit = async (text: string) => {
     try {
       const session = await createSession(text);
-      analyzeSession(session.id);
       navigate(`/session/${session.id}`);
     } catch (error) {
       console.error('Failed to create session:', error);

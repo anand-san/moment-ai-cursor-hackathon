@@ -23,18 +23,27 @@ export default function SessionResult() {
   useEffect(() => {
     if (!id) return;
 
+    const abortController = new AbortController();
+
     const fetchSession = async () => {
       try {
-        const sessionData = await getSession(id);
+        const sessionData = await getSession(id, {
+          signal: abortController.signal,
+        });
         setSession(sessionData);
+        setIsLoading(false);
       } catch (err) {
+        if (err instanceof Error && err.name === 'AbortError') return;
         setError(err instanceof Error ? err.message : 'Failed to load session');
-      } finally {
         setIsLoading(false);
       }
     };
 
     fetchSession();
+
+    return () => {
+      abortController.abort();
+    };
   }, [id]);
 
   if (isLoading) {

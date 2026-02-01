@@ -24,10 +24,14 @@ export async function createSession(
 
 export async function getSession(
   sessionId: string,
+  options?: { signal?: AbortSignal },
 ): Promise<GetSessionResponse> {
-  const response = await api.sessions[':sessionId'].$get({
-    param: { sessionId },
-  });
+  const response = await api.sessions[':sessionId'].$get(
+    {
+      param: { sessionId },
+    },
+    { init: { signal: options?.signal } },
+  );
 
   if (!response.ok) {
     throw new Error('Failed to get session');
@@ -38,10 +42,14 @@ export async function getSession(
 
 export async function analyzeSession(
   sessionId: string,
+  options?: { signal?: AbortSignal },
 ): Promise<AnalyzeSessionResponse> {
-  const response = await api.sessions[':sessionId'].analyze.$post({
-    param: { sessionId },
-  });
+  const response = await api.sessions[':sessionId'].analyze.$post(
+    {
+      param: { sessionId },
+    },
+    { init: { signal: options?.signal } },
+  );
 
   if (!response.ok) {
     throw new Error('Failed to analyze session');
@@ -81,8 +89,13 @@ export async function regenerateTips(
   return response.json() as Promise<AnalyzeSessionResponse>;
 }
 
-export async function getValuableTips(): Promise<GetValuableTipsResponse> {
-  const response = await api.tips.valuable.$get();
+export async function getValuableTips(options?: {
+  signal?: AbortSignal;
+}): Promise<GetValuableTipsResponse> {
+  const response = await api.tips.valuable.$get(
+    {},
+    { init: { signal: options?.signal } },
+  );
 
   if (!response.ok) {
     throw new Error('Failed to get valuable tips');
@@ -91,8 +104,13 @@ export async function getValuableTips(): Promise<GetValuableTipsResponse> {
   return response.json();
 }
 
-export async function getAllSessions(): Promise<GetAllSessionsResponse> {
-  const response = await api.sessions.$get();
+export async function getAllSessions(options?: {
+  signal?: AbortSignal;
+}): Promise<GetAllSessionsResponse> {
+  const response = await api.sessions.$get(
+    {},
+    { init: { signal: options?.signal } },
+  );
 
   if (!response.ok) {
     throw new Error('Failed to get sessions');

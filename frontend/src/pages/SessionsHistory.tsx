@@ -19,20 +19,29 @@ export default function SessionsHistory() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    const abortController = new AbortController();
+
     const fetchSessions = async () => {
       try {
-        const response = await getAllSessions();
+        const response = await getAllSessions({
+          signal: abortController.signal,
+        });
         setSessions(response.sessions);
+        setIsLoading(false);
       } catch (err) {
+        if (err instanceof Error && err.name === 'AbortError') return;
         setError(
           err instanceof Error ? err.message : 'Failed to load sessions',
         );
-      } finally {
         setIsLoading(false);
       }
     };
 
     fetchSessions();
+
+    return () => {
+      abortController.abort();
+    };
   }, []);
 
   const formatDate = (isoDate: string) => {

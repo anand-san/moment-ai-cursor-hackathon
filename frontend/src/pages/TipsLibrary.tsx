@@ -13,18 +13,27 @@ export default function TipsLibrary() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    const abortController = new AbortController();
+
     const fetchTips = async () => {
       try {
-        const response = await getValuableTips();
+        const response = await getValuableTips({
+          signal: abortController.signal,
+        });
         setTips(response.tips);
+        setIsLoading(false);
       } catch (err) {
+        if (err instanceof Error && err.name === 'AbortError') return;
         setError(err instanceof Error ? err.message : 'Failed to load tips');
-      } finally {
         setIsLoading(false);
       }
     };
 
     fetchTips();
+
+    return () => {
+      abortController.abort();
+    };
   }, []);
 
   if (isLoading) {

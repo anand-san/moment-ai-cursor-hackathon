@@ -22,9 +22,14 @@ export default function SessionSummary() {
   useEffect(() => {
     if (!id) return;
 
+    const abortController = new AbortController();
+
     const fetchSession = async () => {
       try {
-        const sessionData = await getSession(id);
+        const sessionData = await getSession(id, {
+          signal: abortController.signal,
+        });
+
         setSession(sessionData);
 
         if (sessionData.analysis) {
@@ -32,17 +37,24 @@ export default function SessionSummary() {
           setIsLoading(false);
         } else {
           // Analysis not ready yet, trigger it
-          const analysisData = await analyzeSession(id);
+          const analysisData = await analyzeSession(id, {
+            signal: abortController.signal,
+          });
           setAnalysis(analysisData);
           setIsLoading(false);
         }
       } catch (err) {
+        if (err instanceof Error && err.name === 'AbortError') return;
         setError(err instanceof Error ? err.message : 'Failed to load session');
         setIsLoading(false);
       }
     };
 
     fetchSession();
+
+    return () => {
+      abortController.abort();
+    };
   }, [id]);
 
   const handleRegenerate = useCallback(async () => {
