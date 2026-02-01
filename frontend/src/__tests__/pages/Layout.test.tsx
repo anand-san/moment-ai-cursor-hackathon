@@ -55,21 +55,21 @@ describe('AppLayout - Auth-based Routing', () => {
 
     renderLayout();
 
-    expect(await screen.findByText('Brain Dump')).toBeInTheDocument();
-    expect(screen.getByText(/Hey John/)).toBeInTheDocument();
+    expect(
+      await screen.findByText("What's on your mind?"),
+    ).toBeInTheDocument();
   });
 
-  it('should show logout button when user is logged in', async () => {
+  it('should show bottom navigation when user is logged in', async () => {
     setMockUser(createMockUser({ displayName: 'Test User' }));
 
     renderLayout();
 
-    await screen.findByText('Brain Dump');
+    await screen.findByText("What's on your mind?");
 
-    const buttons = screen.getAllByRole('button');
-    const logoutButton = buttons.find(btn =>
-      btn.querySelector('.lucide-log-out'),
-    );
-    expect(logoutButton).toBeInTheDocument();
+    expect(screen.getByText('Home')).toBeInTheDocument();
+    expect(screen.getByText('History')).toBeInTheDocument();
+    expect(screen.getByText('Tips')).toBeInTheDocument();
+    expect(screen.getByText('Profile')).toBeInTheDocument();
   });
 });

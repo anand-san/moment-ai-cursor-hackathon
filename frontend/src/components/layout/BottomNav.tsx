@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Clock, Lightbulb } from 'lucide-react';
+import { Home, Clock, Lightbulb, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export const BottomNav = () => {
@@ -20,6 +20,11 @@ export const BottomNav = () => {
       path: '/tips',
       label: 'Tips',
       icon: Lightbulb,
+    },
+    {
+      path: '/profile',
+      label: 'Profile',
+      icon: User,
     },
   ];
 

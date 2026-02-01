@@ -14,6 +14,7 @@ const SessionTips = lazy(() => import('./pages/SessionTips'));
 const SessionResult = lazy(() => import('./pages/SessionResult'));
 const TipsLibrary = lazy(() => import('./pages/TipsLibrary'));
 const SessionsHistory = lazy(() => import('./pages/SessionsHistory'));
+const Profile = lazy(() => import('./pages/Profile'));
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
             <Route path="session/:id/result" element={<SessionResult />} />
             <Route path="tips" element={<TipsLibrary />} />
             <Route path="sessions" element={<SessionsHistory />} />
+            <Route path="profile" element={<Profile />} />
           </Route>
           <Route path="*" element={<Navigate to={'/'} />} />
         </Routes>

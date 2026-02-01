@@ -1,22 +1,14 @@
-import { ThemeToggle } from '@/components/ToggleTheme';
-import { Button } from '@/components/ui/button';
-import { LogOutIcon } from 'lucide-react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
 import SignIn from '@/components/auth/SignIn';
 import { useAuth } from '@/context/auth/AuthContextProvider';
 import { FullScreenLoader } from '@/components/loader';
 import { BottomNav } from '@/components/layout/BottomNav';
+import { PageTransition } from '@/components/layout/PageTransition';
 
 export const AppLayout = () => {
-  const { signOut } = useAuth();
   const { user, isLoading } = useAuth();
-  const handleLogout = async () => {
-    try {
-      await signOut();
-    } catch (error) {
-      console.error('Error logging out: ', error);
-    }
-  };
+  const location = useLocation();
 
   if (isLoading) {
     return <FullScreenLoader />;
@@ -25,24 +17,15 @@ export const AppLayout = () => {
   if (!user) {
     return <SignIn />;
   }
+
   return (
     <>
-      <div className="flex absolute top-4 right-4 space-x-2 z-50">
-        <ThemeToggle />
-        <Button
-          variant={'ghost'}
-          size="icon"
-          className="rounded-full"
-          onClick={handleLogout}
-        >
-          <LogOutIcon className="h-4 w-4" />
-        </Button>
-      </div>
-
-      <div className="h-screen overflow-hidden">
-        <div className="h-[calc(100vh-4rem)] overflow-y-auto">
-          <Outlet />
-        </div>
+      <div className="min-h-screen pb-20">
+        <AnimatePresence mode="wait">
+          <PageTransition key={location.pathname}>
+            <Outlet />
+          </PageTransition>
+        </AnimatePresence>
       </div>
 
       <BottomNav />
