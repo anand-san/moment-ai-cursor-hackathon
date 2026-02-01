@@ -12,7 +12,6 @@ import {
   Sparkles,
 } from 'lucide-react';
 import type { SessionWithId, Tip } from '@sandilya-stack/shared/types';
-import { motion } from 'framer-motion';
 
 export default function SessionResult() {
   const { id } = useParams<{ id: string }>();
@@ -79,50 +78,52 @@ export default function SessionResult() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col p-6 max-w-lg mx-auto">
+    <div className="min-h-screen flex flex-col p-6 max-w-lg mx-auto relative z-10">
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center mb-8"
-      >
+      <div className="text-center mb-8">
         <div className="flex items-center justify-center gap-2 mb-4">
-          <CheckCircle2 className="h-10 w-10 text-green-600" />
+          <div className="p-4 bg-green-100 dark:bg-green-900/30 rounded-full">
+            <CheckCircle2 className="h-10 w-10 text-green-600" />
+          </div>
         </div>
-        <h1 className="text-2xl font-bold mb-2">Session Complete!</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-3xl font-bold mb-3">Session Complete!</h1>
+        <p className="text-muted-foreground text-lg">
           {helpfulTips.length > 0
             ? `You saved ${helpfulTips.length} helpful tip${helpfulTips.length > 1 ? 's' : ''} from this session.`
             : 'No tips saved from this session.'}
         </p>
-      </motion.div>
+      </div>
 
       {/* Helpful tips */}
       {helpfulTips.length > 0 && (
-        <div className="mb-8">
-          <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+        <div className="mb-8 rounded-2xl p-4 border border-white/10 bg-white/30 dark:bg-black/20">
+          <h2 className="text-lg font-semibold mb-4 flex items-center gap-2 justify-center">
             <Sparkles className="h-5 w-5 text-primary" />
             Your Helpful Tips
           </h2>
           <div className="space-y-4">
-            {helpfulTips.map((tip, index) => (
-              <TipItem key={tip.id} tip={tip} index={index} />
+            {helpfulTips.map(tip => (
+              <TipItem key={tip.id} tip={tip} />
             ))}
           </div>
         </div>
       )}
 
       {/* Action buttons */}
-      <div className="space-y-3 mt-auto pt-8">
+      <div className="space-y-4 mt-auto pt-8">
         <Link to="/" className="block">
-          <Button className="w-full gap-2" size="lg">
+          <Button className="w-full gap-2 h-12 text-base rounded-xl" size="lg">
             <Home className="h-5 w-5" />
             Start New Session
           </Button>
         </Link>
 
         <Link to="/tips" className="block">
-          <Button variant="outline" className="w-full gap-2" size="lg">
+          <Button
+            variant="outline"
+            className="w-full gap-2 h-12 text-base rounded-xl border-primary/20"
+            size="lg"
+          >
             <BookOpen className="h-5 w-5" />
             View All My Helpful Tips
           </Button>

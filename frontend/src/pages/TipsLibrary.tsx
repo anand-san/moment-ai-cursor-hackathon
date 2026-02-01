@@ -4,9 +4,8 @@ import { Button } from '@/components/ui/button';
 import { TipItem } from '@/components/tips/TipItem';
 import { FullScreenLoader } from '@/components/loader';
 import { getValuableTips } from '@/api/sessions';
-import { Home, BookOpen, AlertCircle, Inbox } from 'lucide-react';
+import { Home, AlertCircle, Inbox } from 'lucide-react';
 import type { ValuableTip } from '@sandilya-stack/shared/types';
-import { motion } from 'framer-motion';
 
 export default function TipsLibrary() {
   const [tips, setTips] = useState<ValuableTip[]>([]);
@@ -54,77 +53,36 @@ export default function TipsLibrary() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col p-6 max-w-lg mx-auto">
-      {/* Back button */}
-      <div className="mb-6">
-        <Link to="/">
-          <Button variant="ghost" size="sm" className="gap-2">
-            <Home className="h-4 w-4" />
-            Home
-          </Button>
-        </Link>
+    <div className="h-[calc(100vh-5rem)] flex flex-col p-6 max-w-lg mx-auto relative z-10">
+      {/* Header */}
+      <div className="flex-shrink-0 pb-6">
+        <p className="text-muted-foreground text-center">
+          Collection of insights from your sessions
+        </p>
       </div>
 
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mb-8"
-      >
-        <div className="flex items-center gap-2 mb-2">
-          <BookOpen className="h-8 w-8 text-primary" />
-          <h1 className="text-2xl font-bold">Your Helpful Tips Library</h1>
-        </div>
-        <p className="text-muted-foreground">
-          All the tips you found helpful across your sessions.
-        </p>
-      </motion.div>
-
-      {/* Tips list */}
+      {/* Scrollable Content */}
       {tips.length > 0 ? (
-        <div className="space-y-4">
-          {tips.map((tip, index) => (
-            <TipItem
-              key={`${tip.sessionId}-${tip.id}`}
-              tip={tip}
-              showContext
-              index={index}
-            />
+        <div className="flex-1 overflow-y-auto -mx-2 px-2 space-y-4">
+          {tips.map(tip => (
+            <TipItem key={`${tip.sessionId}-${tip.id}`} tip={tip} showContext />
           ))}
+          {/* Stats footer */}
+          <div className="pt-4 pb-2 text-center text-sm text-muted-foreground border-t border-border/30">
+            {tips.length} helpful tip{tips.length > 1 ? 's' : ''} saved
+          </div>
         </div>
       ) : (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="flex-1 flex flex-col items-center justify-center text-center py-12"
-        >
-          <Inbox className="h-16 w-16 text-muted-foreground/50 mb-4" />
+        <div className="flex-1 flex flex-col items-center justify-center text-center py-12">
+          <div className="w-20 h-20 bg-muted/50 rounded-full flex items-center justify-center mb-6">
+            <Inbox className="h-10 w-10 text-muted-foreground/50" />
+          </div>
           <h2 className="text-xl font-medium mb-2">No tips saved yet</h2>
-          <p className="text-muted-foreground mb-6 max-w-xs">
+          <p className="text-muted-foreground mb-8 max-w-xs mx-auto">
             Start a brain dump session and swipe right on tips that resonate
             with you.
           </p>
-          <Link to="/">
-            <Button className="gap-2">
-              <Home className="h-4 w-4" />
-              Start a Session
-            </Button>
-          </Link>
-        </motion.div>
-      )}
-
-      {/* Stats footer */}
-      {tips.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className="mt-8 pt-6 border-t border-border text-center text-sm text-muted-foreground"
-        >
-          <p>
-            {tips.length} helpful tip{tips.length > 1 ? 's' : ''} saved
-          </p>
-        </motion.div>
+        </div>
       )}
     </div>
   );

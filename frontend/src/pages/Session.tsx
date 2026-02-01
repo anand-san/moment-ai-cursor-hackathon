@@ -102,34 +102,26 @@ export default function Session() {
   const unswipedTips = analysis.tips.filter(tip => tip.swipeDirection === null);
 
   return (
-    <div className="min-h-screen flex flex-col p-6 max-w-lg mx-auto">
-      {/* Back button */}
-      <div className="mb-6">
-        <Link to="/">
-          <Button variant="ghost" size="sm" className="gap-2">
-            <Home className="h-4 w-4" />
-            Home
-          </Button>
-        </Link>
-      </div>
-
-      {/* Empathy message */}
-      <div className="mb-8">
+    <div className="min-h-screen flex flex-col p-6 max-w-lg mx-auto relative z-10">
+      {/* Header/Empathy */}
+      <div className="mb-8 text-center">
         <EmpathyResponse message={analysis.empathy} />
       </div>
 
       {/* Tips heading */}
-      <h2 className="text-xl font-semibold mb-4">
+      <h2 className="text-xl font-semibold mb-6 text-center">
         Here are some tips that might help:
       </h2>
 
       {/* Tip stack */}
-      <TipStack
-        tips={unswipedTips}
-        onSwipe={handleSwipe}
-        onRegenerate={handleRegenerate}
-        onComplete={handleComplete}
-      />
+      <div className="flex-1 flex flex-col justify-center">
+        <TipStack
+          tips={unswipedTips}
+          onSwipe={handleSwipe}
+          onRegenerate={handleRegenerate}
+          onComplete={handleComplete}
+        />
+      </div>
     </div>
   );
 }

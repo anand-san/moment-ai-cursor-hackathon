@@ -5,7 +5,6 @@ import { FullScreenLoader } from '@/components/loader';
 import { getAllSessions } from '@/api/sessions';
 import {
   Home,
-  Clock,
   AlertCircle,
   Inbox,
   ThumbsUp,
@@ -13,7 +12,6 @@ import {
   Brain,
 } from 'lucide-react';
 import type { SessionSummary } from '@sandilya-stack/shared/types';
-import { motion } from 'framer-motion';
 
 export default function SessionsHistory() {
   const [sessions, setSessions] = useState<SessionSummary[]>([]);
@@ -79,110 +77,69 @@ export default function SessionsHistory() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col p-6 max-w-lg mx-auto">
-      {/* Back button */}
-      <div className="mb-6">
-        <Link to="/">
-          <Button variant="ghost" size="sm" className="gap-2">
-            <Home className="h-4 w-4" />
-            Home
-          </Button>
-        </Link>
+    <div className="h-[calc(100vh-5rem)] flex flex-col p-6 max-w-lg mx-auto relative z-10">
+      {/* Header */}
+      <div className="flex-shrink-0 pb-6">
+        <p className="text-muted-foreground text-center">
+          Your past brain dumps and insights
+        </p>
       </div>
 
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mb-8"
-      >
-        <div className="flex items-center gap-2 mb-2">
-          <Clock className="h-8 w-8 text-primary" />
-          <h1 className="text-2xl font-bold">Session History</h1>
-        </div>
-        <p className="text-muted-foreground">
-          Your past brain dump sessions and their outcomes.
-        </p>
-      </motion.div>
-
-      {/* Sessions list */}
+      {/* Scrollable Content */}
       {sessions.length > 0 ? (
-        <div className="space-y-3">
-          {sessions.map((session, index) => (
-            <motion.div
+        <div className="flex-1 overflow-y-auto -mx-2 px-2 space-y-4">
+          {sessions.map(session => (
+            <Link
               key={session.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: index * 0.05 }}
+              className="block"
+              to={
+                session.hasAnalysis
+                  ? `/session/${session.id}/result`
+                  : `/session/${session.id}`
+              }
             >
-              <Link
-                to={
-                  session.hasAnalysis
-                    ? `/session/${session.id}/result`
-                    : `/session/${session.id}`
-                }
-              >
-                <div className="p-4 rounded-xl border bg-card shadow-sm hover:shadow-md hover:border-primary/50 transition-all cursor-pointer">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-foreground line-clamp-2">
-                        {truncateText(session.text)}
-                      </p>
-                      <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
-                        <span>{formatDate(session.createdAt)}</span>
-                        {session.helpfulTipsCount > 0 && (
-                          <span className="flex items-center gap-1 text-green-600">
-                            <ThumbsUp className="h-3 w-3" />
-                            {session.helpfulTipsCount} helpful
-                          </span>
-                        )}
-                        {!session.hasAnalysis && (
-                          <span className="flex items-center gap-1 text-amber-600">
-                            <Brain className="h-3 w-3" />
-                            Not analyzed
-                          </span>
-                        )}
-                      </div>
+              <div className="group p-4 rounded-2xl border border-white/10 bg-white/40 dark:bg-black/20 hover:bg-white/60 dark:hover:bg-black/40 transition-colors cursor-pointer">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-foreground line-clamp-2 leading-relaxed group-hover:text-primary transition-colors">
+                      {truncateText(session.text)}
+                    </p>
+                    <div className="flex items-center gap-3 mt-3 text-xs text-muted-foreground">
+                      <span>{formatDate(session.createdAt)}</span>
+                      {session.helpfulTipsCount > 0 && (
+                        <span className="flex items-center gap-1 text-green-600 bg-green-100/50 dark:bg-green-900/30 px-2 py-0.5 rounded-full">
+                          <ThumbsUp className="h-3 w-3" />
+                          {session.helpfulTipsCount}
+                        </span>
+                      )}
+                      {!session.hasAnalysis && (
+                        <span className="flex items-center gap-1 text-amber-600 bg-amber-100/50 dark:bg-amber-900/30 px-2 py-0.5 rounded-full">
+                          <Brain className="h-3 w-3" />
+                          Pending
+                        </span>
+                      )}
                     </div>
-                    <ChevronRight className="h-5 w-5 text-muted-foreground flex-shrink-0" />
                   </div>
+                  <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors flex-shrink-0 mt-1" />
                 </div>
-              </Link>
-            </motion.div>
+              </div>
+            </Link>
           ))}
+          {/* Stats footer */}
+          <div className="pt-4 pb-2 text-center text-sm text-muted-foreground border-t border-border/30">
+            {sessions.length} session{sessions.length > 1 ? 's' : ''} total
+          </div>
         </div>
       ) : (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="flex-1 flex flex-col items-center justify-center text-center py-12"
-        >
-          <Inbox className="h-16 w-16 text-muted-foreground/50 mb-4" />
+        <div className="flex-1 flex flex-col items-center justify-center text-center py-12">
+          <div className="w-20 h-20 bg-muted/50 rounded-full flex items-center justify-center mb-6">
+            <Inbox className="h-10 w-10 text-muted-foreground/50" />
+          </div>
           <h2 className="text-xl font-medium mb-2">No sessions yet</h2>
-          <p className="text-muted-foreground mb-6 max-w-xs">
+          <p className="text-muted-foreground mb-8 max-w-xs mx-auto">
             Start your first brain dump session to see your history here.
           </p>
-          <Link to="/">
-            <Button className="gap-2">
-              <Home className="h-4 w-4" />
-              Start a Session
-            </Button>
-          </Link>
-        </motion.div>
-      )}
-
-      {/* Stats footer */}
-      {sessions.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className="mt-8 pt-6 border-t border-border text-center text-sm text-muted-foreground"
-        >
-          <p>
-            {sessions.length} session{sessions.length > 1 ? 's' : ''} total
-          </p>
-        </motion.div>
+        </div>
       )}
     </div>
   );

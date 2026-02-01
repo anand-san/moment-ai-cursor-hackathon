@@ -76,8 +76,15 @@ export default function Home() {
           {isListening ? "I'm listening..." : "What's on your mind?"}
         </h1>
 
-        {/* Voice Trigger / Visualization */}
-        <div className="relative mb-12">
+        {/* Voice Trigger / Visualization - hidden in typing mode */}
+        <div
+          className={cn(
+            'relative mb-12 transition-all duration-500 ease-in-out',
+            isTypingMode
+              ? 'opacity-0 -translate-y-10 pointer-events-none absolute'
+              : 'opacity-100 translate-y-0',
+          )}
+        >
           {/* Ripple Effects when listening */}
           {isListening && (
             <>
@@ -122,12 +129,8 @@ export default function Home() {
           )}
         >
           {(isListening || transcript) && (
-            <div className="relative px-6 py-4">
-              {/* Subtle gradient background */}
-              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/50 to-transparent rounded-2xl" />
-
-              {/* Transcription text */}
-              <p className="relative text-center text-lg leading-relaxed">
+            <div className="px-6 py-4">
+              <p className="text-center text-lg leading-relaxed">
                 {transcript && (
                   <span className="text-foreground">{transcript}</span>
                 )}
@@ -159,7 +162,7 @@ export default function Home() {
         {/* Text Input Toggle / Area */}
         <div
           className={cn(
-            'w-full transition-all duration-500 ease-in-out',
+            'w-full max-w-md transition-all duration-500 ease-in-out',
             isTypingMode
               ? 'opacity-100 translate-y-0'
               : 'opacity-0 translate-y-10 pointer-events-none absolute bottom-0',
