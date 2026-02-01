@@ -112,36 +112,30 @@ export default function SessionSummary() {
       </div>
 
       {/* Heading */}
-      <h2 className="text-xl font-semibold mb-6 text-center">Session Summary</h2>
+      <h2 className="text-xl font-semibold mb-2 text-center">Session Summary</h2>
 
-      {/* Empathy Response */}
-      <div className="mb-6 text-center">
-        <EmpathyResponse message={analysis.empathy} />
-      </div>
+      {/* Transcript */}
+      <p className="text-sm text-muted-foreground text-center mb-6 italic">
+        "{session.text}"
+      </p>
 
       {/* Identified Problems */}
       <IdentifiedProblems problems={analysis.identifiedProblems} />
 
-      {/* Continue to Tips button */}
-      <div className="flex-1 flex flex-col justify-center">
-        <Button
-          size="lg"
-          onClick={handleContinueToTips}
-          className="w-full gap-2 py-6 text-lg"
-        >
-          Continue to Tips
-          <ArrowRight className="h-5 w-5" />
-        </Button>
+      {/* Empathy Response */}
+      <div className="mt-6 text-center">
+        <EmpathyResponse message={analysis.empathy} />
       </div>
 
-      {/* Regenerate button at bottom */}
-      <div className="flex justify-center pt-8">
+      {/* Action buttons */}
+      <div className="mt-8 space-y-3">
+        {/* Regenerate button */}
         <Button
           variant="ghost"
           size="sm"
           onClick={handleRegenerate}
           disabled={isRegenerating}
-          className="gap-2 text-muted-foreground"
+          className="w-full gap-2 text-muted-foreground"
         >
           {isRegenerating ? (
             <>
@@ -151,9 +145,20 @@ export default function SessionSummary() {
           ) : (
             <>
               <RefreshCw className="h-4 w-4" />
-              Not resonating? Get different tips
+              Not resonating? Let me retry
             </>
           )}
+        </Button>
+
+        {/* Continue to Tips button */}
+        <Button
+          size="default"
+          variant="glass"
+          onClick={handleContinueToTips}
+          className="w-full gap-2 rounded-xl"
+        >
+          Continue to Tips
+          <ArrowRight className="h-5 w-5" />
         </Button>
       </div>
     </div>

@@ -53,28 +53,10 @@ export function TipStack({
 
   if (remainingTips.length === 0) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center space-y-6">
+      <div className="flex-1 flex flex-col items-center justify-center">
         <p className="text-muted-foreground text-lg text-center">
           All tips reviewed!
         </p>
-        <Button
-          variant="outline"
-          onClick={handleRegenerate}
-          disabled={isRegenerating}
-          className="gap-2"
-        >
-          {isRegenerating ? (
-            <>
-              <Loader2 className="animate-spin" />
-              Generating new tips...
-            </>
-          ) : (
-            <>
-              <RefreshCw />
-              Get different tips
-            </>
-          )}
-        </Button>
       </div>
     );
   }

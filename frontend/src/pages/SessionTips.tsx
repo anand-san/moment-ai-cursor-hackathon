@@ -125,7 +125,12 @@ export default function SessionTips() {
       </div>
 
       {/* Tips heading */}
-      <h2 className="text-xl font-semibold mb-6 text-center">Tips for you</h2>
+      <h2 className="text-xl font-semibold mb-2 text-center">Tips for you</h2>
+
+      {/* Transcript */}
+      <p className="text-sm text-muted-foreground text-center mb-6 italic">
+        "{session.text}"
+      </p>
 
       {/* Tip stack */}
       <div className="flex-1 flex flex-col justify-center">

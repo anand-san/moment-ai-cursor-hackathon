@@ -133,7 +133,7 @@ export function TipCard({ tip, onSwipe, isTop }: TipCardProps) {
           {ActionIcon && (
             <button
               onClick={handleActionClick}
-              className="mt-4 flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+              className="mt-4 flex items-center gap-2 px-4 py-2 rounded-full bg-white/30 dark:bg-white/10 backdrop-blur-sm border border-white/20 dark:border-white/10 text-foreground hover:bg-white/40 dark:hover:bg-white/15 transition-all"
             >
               <ActionIcon className="h-4 w-4" />
               <span className="text-sm font-medium capitalize">

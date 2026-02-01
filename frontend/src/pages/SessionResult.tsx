@@ -4,13 +4,7 @@ import { Button } from '@/components/ui/button';
 import { TipItem } from '@/components/tips/TipItem';
 import { FullScreenLoader } from '@/components/loader';
 import { getSession } from '@/api/sessions';
-import {
-  Home,
-  BookOpen,
-  AlertCircle,
-  Sparkles,
-  ArrowLeft,
-} from 'lucide-react';
+import { Home, AlertCircle, Sparkles, ArrowLeft } from 'lucide-react';
 import type { SessionWithId, Tip } from '@sandilya-stack/shared/types';
 
 export default function SessionResult() {
@@ -128,26 +122,6 @@ export default function SessionResult() {
         </div>
       )}
 
-      {/* Action buttons */}
-      <div className="space-y-4 mt-auto pt-8">
-        <Link to="/" className="block">
-          <Button className="w-full gap-2 h-12 text-base rounded-xl" size="lg">
-            <Home className="h-5 w-5" />
-            Start New Session
-          </Button>
-        </Link>
-
-        <Link to="/tips" className="block">
-          <Button
-            variant="outline"
-            className="w-full gap-2 h-12 text-base rounded-xl border-primary/20"
-            size="lg"
-          >
-            <BookOpen className="h-5 w-5" />
-            View All My Helpful Tips
-          </Button>
-        </Link>
-      </div>
     </div>
   );
 }
