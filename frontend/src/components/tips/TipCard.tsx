@@ -39,24 +39,6 @@ export function TipCard({ tip, onSwipe, isTop }: TipCardProps) {
     ],
   );
 
-  // Border color based on swipe direction - strong visual feedback
-  const borderColor = useTransform(
-    x,
-    [-SWIPE_THRESHOLD, 0, SWIPE_THRESHOLD],
-    [
-      'rgba(239, 68, 68, 1)',
-      'rgba(226, 232, 240, 0.3)',
-      'rgba(34, 197, 94, 1)',
-    ],
-  );
-
-  // Border width based on swipe direction - gets thicker when swiping
-  const borderWidth = useTransform(
-    x,
-    [-SWIPE_THRESHOLD, 0, SWIPE_THRESHOLD],
-    ['3px', '1px', '3px'],
-  );
-
   const handleDragEnd = (_: unknown, info: PanInfo) => {
     if (info.offset.x > SWIPE_THRESHOLD) {
       setExitDirection('right');
@@ -107,14 +89,7 @@ export function TipCard({ tip, onSwipe, isTop }: TipCardProps) {
       }}
       whileDrag={{ cursor: 'grabbing' }}
     >
-      <motion.div
-        className="relative p-6 rounded-2xl shadow-lg min-h-[280px] flex flex-col overflow-hidden bg-card"
-        style={{
-          borderColor,
-          borderWidth,
-          borderStyle: 'solid',
-        }}
-      >
+      <motion.div className="relative p-6 rounded-2xl border shadow-lg min-h-[280px] flex flex-col overflow-hidden bg-card">
         {/* Color overlay for swipe feedback */}
         <motion.div
           className="absolute inset-0 rounded-2xl pointer-events-none"
