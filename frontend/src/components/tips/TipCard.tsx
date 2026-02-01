@@ -1,7 +1,15 @@
 import { useState } from 'react';
 import { motion, useMotionValue, useTransform, PanInfo } from 'framer-motion';
 import type { Tip } from '@sandilya-stack/shared/types';
-import { ThumbsUp, ThumbsDown } from 'lucide-react';
+import {
+  ThumbsUp,
+  ThumbsDown,
+  Timer,
+  Bell,
+  MessageSquare,
+  Bookmark,
+  Clock,
+} from 'lucide-react';
 
 interface TipCardProps {
   tip: Tip;
@@ -45,6 +53,11 @@ export function TipCard({ tip, onSwipe, isTop }: TipCardProps) {
     }
   };
 
+  const handleActionClick = () => {
+    // Placeholder action handlers - log for now
+    console.log(`Action clicked: ${tip.actionType} for tip ${tip.id}`);
+  };
+
   const categoryColors = {
     immediate: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
     habit:
@@ -52,6 +65,16 @@ export function TipCard({ tip, onSwipe, isTop }: TipCardProps) {
     mindset:
       'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200',
   };
+
+  const actionIcons = {
+    timer: Timer,
+    reminder: Bell,
+    message: MessageSquare,
+    save: Bookmark,
+  };
+
+  const ActionIcon =
+    tip.actionType !== 'none' ? actionIcons[tip.actionType] : null;
 
   return (
     <motion.div
@@ -70,7 +93,7 @@ export function TipCard({ tip, onSwipe, isTop }: TipCardProps) {
       }}
       whileDrag={{ cursor: 'grabbing' }}
     >
-      <div className="relative p-6 rounded-2xl border bg-card shadow-lg min-h-[250px] flex flex-col">
+      <div className="relative p-6 rounded-2xl border bg-card shadow-lg min-h-[280px] flex flex-col">
         {/* Swipe feedback indicators */}
         <motion.div
           className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-2 text-destructive"
@@ -89,8 +112,38 @@ export function TipCard({ tip, onSwipe, isTop }: TipCardProps) {
         </motion.div>
 
         {/* Card content */}
-        <div className="flex-1 flex flex-col justify-center items-center text-center px-8">
-          <p className="text-xl font-medium leading-relaxed">{tip.content}</p>
+        <div className="flex-1 flex flex-col justify-center items-center text-center px-4">
+          {/* Title */}
+          <h3 className="text-2xl font-bold leading-tight mb-3">{tip.title}</h3>
+
+          {/* Description */}
+          <p className="text-base text-muted-foreground leading-relaxed">
+            {tip.description}
+          </p>
+
+          {/* Time estimate badge (especially relevant for immediate category) */}
+          {tip.timeEstimate && (
+            <div className="mt-4 flex items-center gap-1.5 text-sm text-muted-foreground">
+              <Clock className="h-4 w-4" />
+              <span>{tip.timeEstimate}</span>
+            </div>
+          )}
+
+          {/* Action button (placeholder) */}
+          {ActionIcon && (
+            <button
+              onClick={handleActionClick}
+              className="mt-4 flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+            >
+              <ActionIcon className="h-4 w-4" />
+              <span className="text-sm font-medium capitalize">
+                {tip.actionType === 'timer' && 'Start Timer'}
+                {tip.actionType === 'reminder' && 'Set Reminder'}
+                {tip.actionType === 'message' && 'Send Message'}
+                {tip.actionType === 'save' && 'Save Tip'}
+              </span>
+            </button>
+          )}
         </div>
 
         {/* Tags */}

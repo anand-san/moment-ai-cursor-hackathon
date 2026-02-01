@@ -170,7 +170,8 @@ export async function getValuableTips(input: {
         if (tip.swipeDirection === 'right') {
           valuableTips.push({
             id: tip.id,
-            content: tip.content,
+            title: tip.title,
+            description: tip.description,
             tag: tip.tag,
             sessionId,
             sessionText,
@@ -185,7 +186,8 @@ export async function getValuableTips(input: {
         if (tip.swipeDirection === 'right') {
           valuableTips.push({
             id: tip.id,
-            content: tip.content,
+            title: tip.title,
+            description: tip.description,
             tag: tip.tag,
             sessionId,
             sessionText,

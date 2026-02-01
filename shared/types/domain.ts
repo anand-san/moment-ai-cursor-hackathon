@@ -18,17 +18,27 @@ export const tipCategories = ['immediate', 'habit', 'mindset'] as const;
 
 export const swipeDirections = ['left', 'right'] as const;
 
+export const actionTypes = [
+  'none',
+  'timer',
+  'reminder',
+  'message',
+  'save',
+] as const;
+
 // ============ Base Types ============
 
 export type TipTag = (typeof tipTags)[number];
 export type TipCategory = (typeof tipCategories)[number];
 export type SwipeDirection = (typeof swipeDirections)[number];
+export type ActionType = (typeof actionTypes)[number];
 
 // ============ Schemas (for server validation) ============
 
 export const tipTagSchema = z.enum(tipTags);
 export const tipCategorySchema = z.enum(tipCategories);
 export const swipeDirectionSchema = z.enum(swipeDirections);
+export const actionTypeSchema = z.enum(actionTypes);
 
 export const tagCountsSchema = z.object({
   break: z.number(),
@@ -46,15 +56,19 @@ export const tagCountsSchema = z.object({
 
 export type Tip = {
   id: string;
-  content: string;
+  title: string;
+  description: string;
   tag: TipTag;
   category: TipCategory;
   priority: number;
+  timeEstimate: string;
+  actionType: ActionType;
   swipeDirection: SwipeDirection | null;
 };
 
 export type Analysis = {
   empathy: string;
+  identifiedProblems: string[];
   tips: Tip[];
 };
 
@@ -93,7 +107,8 @@ export type Preferences = {
 
 export type ValuableTip = {
   id: string;
-  content: string;
+  title: string;
+  description: string;
   tag: TipTag;
   sessionId: string;
   sessionText: string;

@@ -98,13 +98,17 @@ describe('Sessions API', () => {
         createdAt: MockTimestamp.now(),
         analysis: {
           empathy: 'I understand.',
+          identifiedProblems: ['Feeling overwhelmed'],
           tips: [
             {
               id: 'tip_1',
-              content: 'Take a break.',
+              title: 'Take a break',
+              description: 'Step away from your desk for 5 minutes.',
               tag: 'break',
               category: 'immediate',
               priority: 1,
+              timeEstimate: '5 min',
+              actionType: 'timer',
               swipeDirection: null,
             },
           ],
@@ -187,11 +191,14 @@ describe('Sessions API', () => {
       expect(response.status).toBe(200);
       const body = await parseJsonResponse<{
         empathy: string;
-        tips: Array<{ id: string; content: string; tag: string }>;
+        identifiedProblems: string[];
+        tips: Array<{ id: string; title: string; tag: string }>;
       }>(response);
       expect(body.empathy).toBeDefined();
+      expect(body.identifiedProblems).toBeDefined();
       expect(body.tips).toHaveLength(2);
       expect(body.tips[0].tag).toBe('breathe');
+      expect(body.tips[0].title).toBeDefined();
     });
 
     it('should return 404 for non-existent session', async () => {
@@ -220,13 +227,17 @@ describe('Sessions API', () => {
           createdAt: MockTimestamp.now(),
           analysis: {
             empathy: 'I understand.',
+            identifiedProblems: ['Feeling stressed'],
             tips: [
               {
                 id: 'tip_1',
-                content: 'Take a break.',
+                title: 'Take a break',
+                description: 'Step away for 5 minutes.',
                 tag: 'break',
                 category: 'immediate',
                 priority: 1,
+                timeEstimate: '5 min',
+                actionType: 'none',
                 swipeDirection: null,
               },
             ],
@@ -286,13 +297,17 @@ describe('Sessions API', () => {
           createdAt: MockTimestamp.now(),
           analysis: {
             empathy: 'I understand.',
+            identifiedProblems: ['Feeling stressed'],
             tips: [
               {
                 id: 'tip_1',
-                content: 'Take a break.',
+                title: 'Take a break',
+                description: 'Step away for 5 minutes.',
                 tag: 'break',
                 category: 'immediate',
                 priority: 1,
+                timeEstimate: '5 min',
+                actionType: 'none',
                 swipeDirection: null,
               },
             ],
@@ -327,6 +342,7 @@ describe('Sessions API', () => {
           createdAt: MockTimestamp.now(),
           analysis: {
             empathy: 'I understand.',
+            identifiedProblems: [],
             tips: [],
           },
           previousTips: [],
@@ -359,13 +375,17 @@ describe('Sessions API', () => {
           createdAt: MockTimestamp.now(),
           analysis: {
             empathy: 'Old empathy.',
+            identifiedProblems: ['Old problem'],
             tips: [
               {
                 id: 'old_tip_1',
-                content: 'Old tip.',
+                title: 'Old tip',
+                description: 'This is an old tip.',
                 tag: 'break',
                 category: 'immediate',
                 priority: 1,
+                timeEstimate: '5 min',
+                actionType: 'none',
                 swipeDirection: 'right',
               },
             ],

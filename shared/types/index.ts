@@ -4,15 +4,18 @@ export {
   tipTags,
   tipCategories,
   swipeDirections,
+  actionTypes,
   defaultTagCounts,
   // Base types
   type TipTag,
   type TipCategory,
   type SwipeDirection,
+  type ActionType,
   // Schemas (server validation)
   tipTagSchema,
   tipCategorySchema,
   swipeDirectionSchema,
+  actionTypeSchema,
   tagCountsSchema,
   // Domain types
   type Tip,

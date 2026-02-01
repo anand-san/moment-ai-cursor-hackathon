@@ -10,8 +10,32 @@ import {
   swipeTip,
   regenerateTips,
 } from '@/api/sessions';
-import { Home, AlertCircle } from 'lucide-react';
+import { Home, AlertCircle, CircleDot } from 'lucide-react';
 import type { SessionWithId, Analysis } from '@sandilya-stack/shared/types';
+
+interface IdentifiedProblemsProps {
+  problems: string[];
+}
+
+function IdentifiedProblems({ problems }: IdentifiedProblemsProps) {
+  if (!problems || problems.length === 0) return null;
+
+  return (
+    <div className="mb-6 p-4 rounded-xl border border-white/10 bg-white/30 dark:bg-black/10">
+      <h3 className="text-sm font-medium text-muted-foreground mb-3">
+        What I noticed:
+      </h3>
+      <ul className="space-y-2">
+        {problems.map((problem, index) => (
+          <li key={index} className="flex items-start gap-2 text-sm">
+            <CircleDot className="h-4 w-4 mt-0.5 text-muted-foreground flex-shrink-0" />
+            <span>{problem}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
 
 export default function Session() {
   const { id } = useParams<{ id: string }>();
@@ -104,9 +128,12 @@ export default function Session() {
   return (
     <div className="min-h-screen flex flex-col p-6 max-w-lg mx-auto relative z-10">
       {/* Header/Empathy */}
-      <div className="mb-8 text-center">
+      <div className="mb-4 text-center">
         <EmpathyResponse message={analysis.empathy} />
       </div>
+
+      {/* Identified Problems */}
+      <IdentifiedProblems problems={analysis.identifiedProblems} />
 
       {/* Tips heading */}
       <h2 className="text-xl font-semibold mb-6 text-center">

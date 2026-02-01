@@ -49,21 +49,28 @@ describe('Tips API', () => {
           createdAt: MockTimestamp.now(),
           analysis: {
             empathy: 'I understand.',
+            identifiedProblems: ['Work stress'],
             tips: [
               {
                 id: 'tip_1',
-                content: 'Take a break.',
+                title: 'Take a break',
+                description: 'Step away from your desk for 5 minutes.',
                 tag: 'break',
                 category: 'immediate',
                 priority: 1,
+                timeEstimate: '5 min',
+                actionType: 'timer',
                 swipeDirection: 'right',
               },
               {
                 id: 'tip_2',
-                content: 'Take a walk.',
+                title: 'Take a walk',
+                description: 'Get some fresh air outside.',
                 tag: 'movement',
                 category: 'immediate',
                 priority: 2,
+                timeEstimate: '10 min',
+                actionType: 'none',
                 swipeDirection: 'left',
               },
             ],
@@ -81,7 +88,8 @@ describe('Tips API', () => {
       const body = await parseJsonResponse<{
         tips: Array<{
           id: string;
-          content: string;
+          title: string;
+          description: string;
           tag: string;
           sessionId: string;
           sessionText: string;
@@ -89,7 +97,10 @@ describe('Tips API', () => {
       }>(response);
       expect(body.tips).toHaveLength(1);
       expect(body.tips[0].id).toBe('tip_1');
-      expect(body.tips[0].content).toBe('Take a break.');
+      expect(body.tips[0].title).toBe('Take a break');
+      expect(body.tips[0].description).toBe(
+        'Step away from your desk for 5 minutes.',
+      );
       expect(body.tips[0].tag).toBe('break');
       expect(body.tips[0].sessionId).toBe('session-123');
       expect(body.tips[0].sessionText).toBe('I feel stressed about work.');
@@ -103,13 +114,17 @@ describe('Tips API', () => {
           createdAt: MockTimestamp.now(),
           analysis: {
             empathy: 'I understand.',
+            identifiedProblems: ['Some problem'],
             tips: [
               {
                 id: 'current_tip',
-                content: 'Current tip.',
+                title: 'Current tip',
+                description: 'This is the current tip.',
                 tag: 'breathe',
                 category: 'immediate',
                 priority: 1,
+                timeEstimate: '30 sec',
+                actionType: 'timer',
                 swipeDirection: null,
               },
             ],
@@ -120,10 +135,13 @@ describe('Tips API', () => {
               tips: [
                 {
                   id: 'old_tip',
-                  content: 'Old valuable tip.',
+                  title: 'Old valuable tip',
+                  description: 'This was a helpful old tip.',
                   tag: 'simplify',
                   category: 'immediate',
                   priority: 1,
+                  timeEstimate: '2 min',
+                  actionType: 'none',
                   swipeDirection: 'right',
                 },
               ],
@@ -139,11 +157,12 @@ describe('Tips API', () => {
 
       expect(response.status).toBe(200);
       const body = await parseJsonResponse<{
-        tips: Array<{ id: string; content: string }>;
+        tips: Array<{ id: string; title: string; description: string }>;
       }>(response);
       expect(body.tips).toHaveLength(1);
       expect(body.tips[0].id).toBe('old_tip');
-      expect(body.tips[0].content).toBe('Old valuable tip.');
+      expect(body.tips[0].title).toBe('Old valuable tip');
+      expect(body.tips[0].description).toBe('This was a helpful old tip.');
     });
 
     it('should aggregate tips from multiple sessions', async () => {
@@ -153,13 +172,17 @@ describe('Tips API', () => {
           createdAt: MockTimestamp.now(),
           analysis: {
             empathy: 'I understand.',
+            identifiedProblems: ['Problem 1'],
             tips: [
               {
                 id: 'tip_s1',
-                content: 'Tip from session 1.',
+                title: 'Tip from session 1',
+                description: 'Description for session 1 tip.',
                 tag: 'break',
                 category: 'immediate',
                 priority: 1,
+                timeEstimate: '5 min',
+                actionType: 'none',
                 swipeDirection: 'right',
               },
             ],
@@ -171,13 +194,17 @@ describe('Tips API', () => {
           createdAt: MockTimestamp.now(),
           analysis: {
             empathy: 'I hear you.',
+            identifiedProblems: ['Problem 2'],
             tips: [
               {
                 id: 'tip_s2',
-                content: 'Tip from session 2.',
+                title: 'Tip from session 2',
+                description: 'Description for session 2 tip.',
                 tag: 'movement',
                 category: 'immediate',
                 priority: 1,
+                timeEstimate: '10 min',
+                actionType: 'none',
                 swipeDirection: 'right',
               },
             ],
