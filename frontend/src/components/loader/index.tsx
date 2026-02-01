@@ -3,8 +3,13 @@ export function Loader() {
   return <div className="spinner"></div>;
 }
 
-export const FullScreenLoader = () => (
-  <div className="h-screen flex justify-center items-center">
+interface FullScreenLoaderProps {
+  message?: string;
+}
+
+export const FullScreenLoader = ({ message }: FullScreenLoaderProps) => (
+  <div className="h-screen flex flex-col justify-center items-center">
     <Loader2 className="animate-spin" />
+    {message && <p className="text-muted-foreground">{message}</p>}
   </div>
 );

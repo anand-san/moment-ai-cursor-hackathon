@@ -84,17 +84,12 @@ export default function SessionTips() {
   }, [id, navigate]);
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-6">
-        <FullScreenLoader />
-        <p className="mt-4 text-muted-foreground">Loading tips...</p>
-      </div>
-    );
+    return <FullScreenLoader message="Loading tips..." />;
   }
 
   if (error || !session || !analysis) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-6">
+      <div className="h-full flex flex-col items-center justify-center p-6">
         <div className="flex items-center gap-2 text-destructive mb-4">
           <AlertCircle className="h-6 w-6" />
           <span className="text-lg">{error || 'Session not found'}</span>
@@ -113,7 +108,7 @@ export default function SessionTips() {
   const unswipedTips = analysis.tips.filter(tip => tip.swipeDirection === null);
 
   return (
-    <div className="min-h-screen flex flex-col p-6 max-w-lg mx-auto relative z-10">
+    <div className="flex flex-col p-6 max-w-lg mx-auto relative z-10">
       {/* Back button */}
       <div className="mb-4">
         <Link to={`/session/${id}`}>

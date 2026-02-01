@@ -62,7 +62,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6 relative overflow-hidden">
+    <div className="h-full flex flex-col items-center justify-center p-6 relative overflow-hidden">
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col items-center justify-center w-full max-w-md mx-auto z-10">
         {/* Static Title */}

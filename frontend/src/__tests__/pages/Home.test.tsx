@@ -112,6 +112,7 @@ describe('Home Page - Brain Dump', () => {
     });
     mockAnalyzeSession.mockResolvedValueOnce({
       empathy: 'I hear you',
+      identifiedProblems: [],
       tips: [],
     });
 
@@ -156,6 +157,7 @@ describe('Home Page - Brain Dump', () => {
     mockCreateSession.mockReturnValueOnce(pendingPromise);
     mockAnalyzeSession.mockResolvedValueOnce({
       empathy: 'I hear you',
+      identifiedProblems: [],
       tips: [],
     });
 

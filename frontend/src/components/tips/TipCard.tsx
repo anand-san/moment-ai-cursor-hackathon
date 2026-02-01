@@ -1,15 +1,7 @@
 import { useState } from 'react';
 import { motion, useMotionValue, useTransform, PanInfo } from 'framer-motion';
 import type { Tip } from '@sandilya-stack/shared/types';
-import {
-  ThumbsUp,
-  ThumbsDown,
-  Timer,
-  Bell,
-  MessageSquare,
-  Bookmark,
-  Clock,
-} from 'lucide-react';
+import { Timer, Bell, MessageSquare, Bookmark, Clock } from 'lucide-react';
 
 interface TipCardProps {
   tip: Tip;
@@ -28,18 +20,22 @@ export function TipCard({ tip, onSwipe, isTop }: TipCardProps) {
   // Transform x position to rotation (tilt effect)
   const rotate = useTransform(x, [-200, 0, 200], [-15, 0, 15]);
 
-  // Transform x position to opacity for feedback indicators
-  const leftOpacity = useTransform(x, [-SWIPE_THRESHOLD, 0], [1, 0]);
-  const rightOpacity = useTransform(x, [0, SWIPE_THRESHOLD], [0, 1]);
-
-  // Background color based on swipe direction
+  // Background color overlay based on swipe direction - vibrant color feedback
   const backgroundColor = useTransform(
     x,
-    [-SWIPE_THRESHOLD, 0, SWIPE_THRESHOLD],
     [
-      'rgba(239, 68, 68, 0.1)',
+      -SWIPE_THRESHOLD * 2,
+      -SWIPE_THRESHOLD,
+      0,
+      SWIPE_THRESHOLD,
+      SWIPE_THRESHOLD * 2,
+    ],
+    [
+      'rgba(239, 68, 68, 0.5)',
+      'rgba(239, 68, 68, 0.25)',
       'rgba(255, 255, 255, 0)',
-      'rgba(34, 197, 94, 0.1)',
+      'rgba(34, 197, 94, 0.25)',
+      'rgba(34, 197, 94, 0.5)',
     ],
   );
 
@@ -79,7 +75,7 @@ export function TipCard({ tip, onSwipe, isTop }: TipCardProps) {
   return (
     <motion.div
       className={`absolute w-full ${isTop ? 'z-10' : 'z-0'}`}
-      style={{ x, rotate, backgroundColor }}
+      style={{ x, rotate }}
       drag={isTop ? 'x' : false}
       dragConstraints={{ left: 0, right: 0 }}
       dragElastic={0.9}
@@ -93,26 +89,15 @@ export function TipCard({ tip, onSwipe, isTop }: TipCardProps) {
       }}
       whileDrag={{ cursor: 'grabbing' }}
     >
-      <div className="relative p-6 rounded-2xl border bg-card shadow-lg min-h-[280px] flex flex-col">
-        {/* Swipe feedback indicators */}
+      <motion.div className="relative p-6 rounded-2xl border shadow-lg min-h-[280px] flex flex-col overflow-hidden bg-card">
+        {/* Color overlay for swipe feedback */}
         <motion.div
-          className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-2 text-destructive"
-          style={{ opacity: leftOpacity }}
-        >
-          <ThumbsDown className="h-8 w-8" />
-          <span className="font-semibold">Not helpful</span>
-        </motion.div>
-
-        <motion.div
-          className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2 text-green-600"
-          style={{ opacity: rightOpacity }}
-        >
-          <span className="font-semibold">Helpful</span>
-          <ThumbsUp className="h-8 w-8" />
-        </motion.div>
+          className="absolute inset-0 rounded-2xl pointer-events-none"
+          style={{ backgroundColor }}
+        />
 
         {/* Card content */}
-        <div className="flex-1 flex flex-col justify-center items-center text-center px-4">
+        <div className="relative z-10 flex-1 flex flex-col justify-center items-center text-center px-4">
           {/* Title */}
           <h3 className="text-2xl font-bold leading-tight mb-3">{tip.title}</h3>
 
@@ -164,7 +149,7 @@ export function TipCard({ tip, onSwipe, isTop }: TipCardProps) {
             Swipe left if not helpful, right if helpful
           </div>
         )}
-      </div>
+      </motion.div>
     </motion.div>
   );
 }

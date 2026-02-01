@@ -5,10 +5,13 @@ import type { Tip } from '@sandilya-stack/shared/types';
 
 const mockTip: Tip = {
   id: 'tip-1',
-  content: 'Take 3 deep breaths to calm your nervous system.',
+  title: 'Take Deep Breaths',
+  description: 'Take 3 deep breaths to calm your nervous system.',
   tag: 'breathe',
   category: 'immediate',
   priority: 1,
+  timeEstimate: '2 minutes',
+  actionType: 'timer',
   swipeDirection: null,
 };
 
@@ -52,13 +55,16 @@ describe('TipCard', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('should have feedback indicators', () => {
+  it('should render card for swiping', () => {
     const onSwipe = vi.fn();
 
-    render(<TipCard tip={mockTip} onSwipe={onSwipe} isTop={true} />);
+    const { container } = render(
+      <TipCard tip={mockTip} onSwipe={onSwipe} isTop={true} />,
+    );
 
-    expect(screen.getByText('Not helpful')).toBeInTheDocument();
-    expect(screen.getByText('Helpful')).toBeInTheDocument();
+    // Card should be draggable and have motion animations
+    const motionDiv = container.querySelector('[style]');
+    expect(motionDiv).toBeInTheDocument();
   });
 
   it('should call onSwipe with right when dragged right', () => {
