@@ -65,140 +65,134 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6 relative overflow-hidden">
       {/* Main Content Area */}
-      <main className="flex-1 flex flex-col items-center justify-center w-full max-w-md mx-auto z-10 transition-all duration-500 ease-in-out">
-        {/* Dynamic Header */}
-        <h1
-          className={cn(
-            'text-4xl font-bold text-center mb-16 transition-all duration-300',
-            isListening ? 'scale-90 opacity-80' : 'scale-100',
-          )}
-        >
-          {isListening ? "I'm listening..." : "What's on your mind?"}
+      <main className="flex-1 flex flex-col items-center justify-center w-full max-w-md mx-auto z-10">
+        {/* Static Title */}
+        <h1 className="text-4xl font-bold text-center mb-16">
+          What's on your mind?
         </h1>
 
-        {/* Voice Trigger / Visualization - hidden in typing mode */}
-        <div
-          className={cn(
-            'relative mb-12 transition-all duration-500 ease-in-out',
-            isTypingMode
-              ? 'opacity-0 -translate-y-10 pointer-events-none absolute'
-              : 'opacity-100 translate-y-0',
-          )}
-        >
-          {/* Ripple Effects when listening */}
-          {isListening && (
-            <>
-              <div className="absolute inset-0 rounded-full bg-primary/20 animate-ping opacity-75 pointer-events-none" />
-              <div className="absolute inset-[-12px] rounded-full bg-primary/10 animate-pulse delay-75 pointer-events-none" />
-            </>
-          )}
-
-          <Button
-            size="lg"
-            variant="ghost"
+        {/* Fixed Input Container - both modes overlay in this space */}
+        <div className="relative w-full max-w-md h-[320px]">
+          {/* Voice Mode - always positioned, opacity controlled */}
+          <div
             className={cn(
-              'rounded-full w-24 h-24 flex items-center justify-center transition-all duration-300 shadow-xl',
-              isListening
-                ? 'bg-primary/20 text-primary border-2 border-primary/30'
-                : 'bg-white dark:bg-zinc-800 text-primary  hover:scale-105 border border-white/20 dark:border-white/10',
+              'absolute inset-0 flex flex-col items-center transition-opacity duration-300 ease-out',
+              isTypingMode ? 'opacity-0 pointer-events-none' : 'opacity-100',
             )}
-            onClick={toggleListening}
           >
-            {isListening ? (
-              <AudioLines className="w-10 h-10 animate-pulse" />
-            ) : (
-              <Mic className="w-10 h-10" />
-            )}
-          </Button>
+            {/* Voice Button Container */}
+            <div className="relative mb-12">
+              {/* Ripple Effects when listening */}
+              {isListening && (
+                <>
+                  <div className="absolute inset-0 rounded-full bg-primary/20 animate-ping opacity-75 pointer-events-none" />
+                  <div className="absolute inset-[-12px] rounded-full bg-primary/10 animate-pulse delay-75 pointer-events-none" />
+                </>
+              )}
 
-          {/* Timer or Status Text */}
-          <div className="absolute -bottom-10 left-0 right-0 text-center">
-            <span className="text-sm font-medium text-muted-foreground">
-              {isListening ? 'Tap to stop' : 'Tap to speak'}
-            </span>
-          </div>
-        </div>
+              <Button
+                size="lg"
+                variant="ghost"
+                className={cn(
+                  'rounded-full w-24 h-24 flex items-center justify-center transition-all duration-300 shadow-xl',
+                  isListening
+                    ? 'bg-primary/20 text-primary border-2 border-primary/30'
+                    : 'bg-white dark:bg-zinc-800 text-primary hover:scale-105 border border-white/20 dark:border-white/10',
+                )}
+                onClick={toggleListening}
+              >
+                {isListening ? (
+                  <AudioLines className="w-10 h-10 animate-pulse" />
+                ) : (
+                  <Mic className="w-10 h-10" />
+                )}
+              </Button>
 
-        {/* Live Transcription Display */}
-        <div
-          className={cn(
-            'w-full max-w-sm min-h-[80px] transition-all duration-500 ease-out',
-            isListening || transcript
-              ? 'opacity-100 translate-y-0'
-              : 'opacity-0 translate-y-4',
-          )}
-        >
-          {(isListening || transcript) && (
-            <div className="px-6 py-4">
-              <p className="text-center text-lg leading-relaxed">
-                {transcript && (
-                  <span className="text-foreground">{transcript}</span>
-                )}
-                {interimTranscript && (
-                  <span className="text-muted-foreground/70 italic">
-                    {transcript ? ' ' : ''}
-                    {interimTranscript}
-                  </span>
-                )}
-                {isListening && !transcript && !interimTranscript && (
-                  <span className="text-muted-foreground/50 animate-pulse">
-                    Start speaking...
-                  </span>
-                )}
-              </p>
+              {/* Status Text */}
+              <div className="absolute -bottom-10 left-0 right-0 text-center">
+                <span className="text-sm font-medium text-muted-foreground">
+                  {isListening ? 'Tap to stop' : 'Tap to speak'}
+                </span>
+              </div>
+            </div>
 
-              {/* Typing indicator dots when listening */}
-              {isListening && (transcript || interimTranscript) && (
-                <div className="flex justify-center gap-1 mt-3">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary/60 animate-bounce [animation-delay:-0.3s]" />
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary/60 animate-bounce [animation-delay:-0.15s]" />
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary/60 animate-bounce" />
+            {/* Live Transcription Display */}
+            <div
+              className={cn(
+                'w-full max-w-sm min-h-[80px] transition-opacity duration-300 ease-out',
+                isListening || transcript ? 'opacity-100' : 'opacity-0',
+              )}
+            >
+              {(isListening || transcript) && (
+                <div className="px-6 py-4">
+                  <p className="text-center text-lg leading-relaxed">
+                    {transcript && (
+                      <span className="text-foreground">{transcript}</span>
+                    )}
+                    {interimTranscript && (
+                      <span className="text-muted-foreground/70 italic">
+                        {transcript ? ' ' : ''}
+                        {interimTranscript}
+                      </span>
+                    )}
+                    {isListening && !transcript && !interimTranscript && (
+                      <span className="text-muted-foreground/50 animate-pulse">
+                        Start speaking...
+                      </span>
+                    )}
+                  </p>
+
+                  {/* Typing indicator dots when listening */}
+                  {isListening && (transcript || interimTranscript) && (
+                    <div className="flex justify-center gap-1 mt-3">
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary/60 animate-bounce [animation-delay:-0.3s]" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary/60 animate-bounce [animation-delay:-0.15s]" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary/60 animate-bounce" />
+                    </div>
+                  )}
                 </div>
               )}
             </div>
-          )}
-        </div>
 
-        {/* Text Input Toggle / Area */}
-        <div
-          className={cn(
-            'w-full max-w-md transition-all duration-500 ease-in-out',
-            isTypingMode
-              ? 'opacity-100 translate-y-0'
-              : 'opacity-0 translate-y-10 pointer-events-none absolute bottom-0',
-          )}
-        >
-          <div className="glass-card p-4">
-            <TextInput
-              ref={textInputRef}
-              onSubmit={handleSubmit}
-              placeholder="Type your thoughts..."
-            />
+            {/* Keyboard Toggle */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className={cn(
+                'mt-4 rounded-full text-muted-foreground hover:text-primary transition-opacity duration-300 hover:bg-white/50',
+                isListening ? 'opacity-0 pointer-events-none' : 'opacity-100',
+              )}
+              onClick={() => setIsTypingMode(true)}
+            >
+              <Keyboard className="w-6 h-6" />
+            </Button>
+          </div>
+
+          {/* Typing Mode - always positioned, opacity controlled */}
+          <div
+            className={cn(
+              'absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-300 ease-out',
+              isTypingMode ? 'opacity-100' : 'opacity-0 pointer-events-none',
+            )}
+          >
+            <div className="w-full glass-card p-4">
+              <TextInput
+                ref={textInputRef}
+                onSubmit={handleSubmit}
+                placeholder="Type your thoughts..."
+              />
+            </div>
+
+            {/* Cancel Button */}
+            <Button
+              variant="ghost"
+              className="mt-4 text-sm text-muted-foreground"
+              onClick={() => setIsTypingMode(false)}
+            >
+              Cancel
+            </Button>
           </div>
         </div>
-
-        {/* Keyboard Toggle (only visible when not typing) */}
-        {!isTypingMode && !isListening && (
-          <Button
-            variant="ghost"
-            size="icon"
-            className="mt-8 rounded-full text-muted-foreground hover:text-primary transition-colors hover:bg-white/50"
-            onClick={() => setIsTypingMode(true)}
-          >
-            <Keyboard className="w-6 h-6" />
-          </Button>
-        )}
-
-        {/* Cancel Typing Mode */}
-        {isTypingMode && (
-          <Button
-            variant="ghost"
-            className="mt-4 text-sm text-muted-foreground"
-            onClick={() => setIsTypingMode(false)}
-          >
-            Cancel
-          </Button>
-        )}
       </main>
     </div>
   );
