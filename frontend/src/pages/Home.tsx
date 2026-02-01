@@ -62,7 +62,7 @@ export default function Home() {
   };
 
   return (
-    <div className="h-full flex flex-col items-center justify-center p-6 relative overflow-hidden">
+    <div className="min-h-[calc(100vh-5rem)] flex flex-col items-center justify-center p-6 relative overflow-hidden">
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col items-center justify-center w-full max-w-md mx-auto z-10">
         {/* Static Title */}
@@ -93,7 +93,7 @@ export default function Home() {
                 size="lg"
                 variant="ghost"
                 className={cn(
-                  'rounded-full w-24 h-24 flex items-center justify-center transition-all duration-300 shadow-xl',
+                  'cursor-pointer rounded-full w-32 h-32 flex items-center justify-center transition-all duration-300 shadow-xl',
                   isListening
                     ? 'bg-primary/20 text-primary border-2 border-primary/30'
                     : 'bg-white dark:bg-zinc-800 text-primary hover:scale-105 border border-white/20 dark:border-white/10',
@@ -101,9 +101,9 @@ export default function Home() {
                 onClick={toggleListening}
               >
                 {isListening ? (
-                  <AudioLines className="w-10 h-10 animate-pulse" />
+                  <AudioLines className="!w-6 !h-10 animate-pulse" />
                 ) : (
-                  <Mic className="w-10 h-10" />
+                  <Mic className="!w-6 !h-10" />
                 )}
               </Button>
 
