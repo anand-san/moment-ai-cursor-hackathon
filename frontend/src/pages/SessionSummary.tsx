@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { EmpathyResponse } from '@/components/tips/EmpathyResponse';
 import { IdentifiedProblems } from '@/components/tips/IdentifiedProblems';
-import { FullScreenLoader } from '@/components/loader';
+import { AnalysisLoader } from '@/components/loader';
 import { getSession, analyzeSession, regenerateTips } from '@/api/sessions';
 import {
   Home,
@@ -81,7 +81,7 @@ export default function SessionSummary() {
   }, [id, navigate]);
 
   if (isLoading) {
-    return <FullScreenLoader message="Analyzing your thoughts..." />;
+    return <AnalysisLoader />;
   }
 
   if (error || !session || !analysis) {

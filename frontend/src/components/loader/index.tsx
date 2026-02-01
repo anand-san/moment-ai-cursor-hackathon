@@ -1,4 +1,7 @@
 import { Loader2 } from 'lucide-react';
+
+export { AnalysisLoader } from './AnalysisLoader';
+
 export function Loader() {
   return <div className="spinner"></div>;
 }
