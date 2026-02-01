@@ -39,8 +39,10 @@ export const AppLayout = () => {
         </Button>
       </div>
 
-      <div className="min-h-screen pb-20">
-        <Outlet />
+      <div className="h-screen overflow-hidden">
+        <div className="h-[calc(100vh-4rem)] overflow-y-auto">
+          <Outlet />
+        </div>
       </div>
 
       <BottomNav />

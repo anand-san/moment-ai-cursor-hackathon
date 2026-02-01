@@ -38,7 +38,7 @@ export default function TipsLibrary() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-6">
+      <div className="h-full flex flex-col items-center justify-center p-6">
         <FullScreenLoader />
       </div>
     );
@@ -46,7 +46,7 @@ export default function TipsLibrary() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-6">
+      <div className="h-full flex flex-col items-center justify-center p-6">
         <div className="flex items-center gap-2 text-destructive mb-4">
           <AlertCircle className="h-6 w-6" />
           <span className="text-lg">{error}</span>
@@ -62,7 +62,7 @@ export default function TipsLibrary() {
   }
 
   return (
-    <div className="h-[calc(100vh-5rem)] flex flex-col p-6 max-w-lg mx-auto relative z-10">
+    <div className="h-full flex flex-col p-6 max-w-lg mx-auto relative z-10">
       {/* Header */}
       <div className="flex-shrink-0 pb-6">
         <p className="text-muted-foreground text-center">

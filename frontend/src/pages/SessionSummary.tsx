@@ -5,7 +5,14 @@ import { EmpathyResponse } from '@/components/tips/EmpathyResponse';
 import { IdentifiedProblems } from '@/components/tips/IdentifiedProblems';
 import { FullScreenLoader } from '@/components/loader';
 import { getSession, analyzeSession, regenerateTips } from '@/api/sessions';
-import { Home, AlertCircle, ArrowRight, RefreshCw, Loader2, ArrowLeft } from 'lucide-react';
+import {
+  Home,
+  AlertCircle,
+  ArrowRight,
+  RefreshCw,
+  Loader2,
+  ArrowLeft,
+} from 'lucide-react';
 import type { SessionWithId, Analysis } from '@sandilya-stack/shared/types';
 
 export default function SessionSummary() {
@@ -75,7 +82,7 @@ export default function SessionSummary() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-6">
+      <div className="h-full flex flex-col items-center justify-center p-6">
         <FullScreenLoader />
         <p className="mt-4 text-muted-foreground">Analyzing your thoughts...</p>
       </div>
@@ -84,7 +91,7 @@ export default function SessionSummary() {
 
   if (error || !session || !analysis) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-6">
+      <div className="h-full flex flex-col items-center justify-center p-6">
         <div className="flex items-center gap-2 text-destructive mb-4">
           <AlertCircle className="h-6 w-6" />
           <span className="text-lg">{error || 'Session not found'}</span>
@@ -100,7 +107,7 @@ export default function SessionSummary() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col p-6 max-w-lg mx-auto relative z-10">
+    <div className="flex flex-col p-6 max-w-lg mx-auto relative z-10">
       {/* Back button */}
       <div className="mb-4">
         <Link to="/">
@@ -112,7 +119,9 @@ export default function SessionSummary() {
       </div>
 
       {/* Heading */}
-      <h2 className="text-xl font-semibold mb-2 text-center">Session Summary</h2>
+      <h2 className="text-xl font-semibold mb-2 text-center">
+        Session Summary
+      </h2>
 
       {/* Transcript */}
       <p className="text-sm text-muted-foreground text-center mb-6 italic">
