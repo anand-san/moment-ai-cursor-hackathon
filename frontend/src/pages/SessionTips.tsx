@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { EmpathyResponse } from '@/components/tips/EmpathyResponse';
 import { TipStack } from '@/components/tips/TipStack';
 import { FullScreenLoader } from '@/components/loader';
 import {
@@ -10,34 +9,10 @@ import {
   swipeTip,
   regenerateTips,
 } from '@/api/sessions';
-import { Home, AlertCircle, CircleDot } from 'lucide-react';
+import { ArrowLeft, AlertCircle, Home } from 'lucide-react';
 import type { SessionWithId, Analysis } from '@sandilya-stack/shared/types';
 
-interface IdentifiedProblemsProps {
-  problems: string[];
-}
-
-function IdentifiedProblems({ problems }: IdentifiedProblemsProps) {
-  if (!problems || problems.length === 0) return null;
-
-  return (
-    <div className="mb-6 p-4 rounded-xl border border-white/10 bg-white/30 dark:bg-black/10">
-      <h3 className="text-sm font-medium text-muted-foreground mb-3">
-        What I noticed:
-      </h3>
-      <ul className="space-y-2">
-        {problems.map((problem, index) => (
-          <li key={index} className="flex items-start gap-2 text-sm">
-            <CircleDot className="h-4 w-4 mt-0.5 text-muted-foreground flex-shrink-0" />
-            <span>{problem}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-export default function Session() {
+export default function SessionTips() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
@@ -46,7 +21,7 @@ export default function Session() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch session data
+  // Fetch session data (handles direct URL access)
   useEffect(() => {
     if (!id) return;
 
@@ -59,7 +34,7 @@ export default function Session() {
           setAnalysis(sessionData.analysis);
           setIsLoading(false);
         } else {
-          // Analysis not ready yet, trigger it and poll
+          // Analysis not ready yet, trigger it
           const analysisData = await analyzeSession(id);
           setAnalysis(analysisData);
           setIsLoading(false);
@@ -100,7 +75,7 @@ export default function Session() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-6">
         <FullScreenLoader />
-        <p className="mt-4 text-muted-foreground">Analyzing your thoughts...</p>
+        <p className="mt-4 text-muted-foreground">Loading tips...</p>
       </div>
     );
   }
@@ -127,18 +102,18 @@ export default function Session() {
 
   return (
     <div className="min-h-screen flex flex-col p-6 max-w-lg mx-auto relative z-10">
-      {/* Header/Empathy */}
-      <div className="mb-4 text-center">
-        <EmpathyResponse message={analysis.empathy} />
+      {/* Back button */}
+      <div className="mb-4">
+        <Link to={`/session/${id}`}>
+          <Button variant="ghost" size="sm" className="gap-2">
+            <ArrowLeft className="h-4 w-4" />
+            Back
+          </Button>
+        </Link>
       </div>
 
-      {/* Identified Problems */}
-      <IdentifiedProblems problems={analysis.identifiedProblems} />
-
       {/* Tips heading */}
-      <h2 className="text-xl font-semibold mb-6 text-center">
-        Here are some tips that might help:
-      </h2>
+      <h2 className="text-xl font-semibold mb-6 text-center">Tips for you</h2>
 
       {/* Tip stack */}
       <div className="flex-1 flex flex-col justify-center">
