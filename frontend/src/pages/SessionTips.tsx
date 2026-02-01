@@ -84,12 +84,7 @@ export default function SessionTips() {
   }, [id, navigate]);
 
   if (isLoading) {
-    return (
-      <div className="h-full flex flex-col items-center justify-center p-6">
-        <FullScreenLoader />
-        <p className="mt-4 text-muted-foreground">Loading tips...</p>
-      </div>
-    );
+    return <FullScreenLoader message="Loading tips..." />;
   }
 
   if (error || !session || !analysis) {
