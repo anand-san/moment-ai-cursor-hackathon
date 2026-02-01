@@ -1,101 +1,201 @@
-import { useState, useRef, useCallback } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import {
   TextInput,
   type TextInputRef,
 } from '@/components/brain-dump/TextInput';
-import { VoiceInput } from '@/components/brain-dump/VoiceInput';
 import { createSession, analyzeSession } from '@/api/sessions';
-import { useAuth } from '@/context/auth/AuthContextProvider';
-import { BookOpen, Brain, Sparkles, Clock } from 'lucide-react';
+import { useSpeechToText } from '@/hooks/useSpeechToText';
+import { Mic, AudioLines, Keyboard } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 export default function Home() {
-  const { user } = useAuth();
   const navigate = useNavigate();
   const textInputRef = useRef<TextInputRef>(null);
-  const [inputMode, setInputMode] = useState<'text' | 'voice'>('text');
+  const [isTypingMode, setIsTypingMode] = useState(false);
 
-  const handleTranscriptChange = useCallback((transcript: string) => {
-    if (textInputRef.current) {
+  const {
+    isListening,
+    transcript,
+    interimTranscript,
+    startListening,
+    stopListening,
+    resetTranscript,
+  } = useSpeechToText();
+
+  // Handle transcript updates
+  useEffect(() => {
+    if (transcript && textInputRef.current) {
       textInputRef.current.setText(transcript);
     }
-  }, []);
+  }, [transcript]);
+
+  // Auto-submit when listening stops
+  const wasListeningRef = useRef(false);
+  useEffect(() => {
+    if (wasListeningRef.current && !isListening) {
+      if (transcript.trim().length > 0) {
+        handleSubmit(transcript);
+      }
+    }
+    wasListeningRef.current = isListening;
+  }, [isListening, transcript]);
+
+  const toggleListening = () => {
+    if (isListening) {
+      stopListening();
+    } else {
+      resetTranscript();
+      startListening();
+      setIsTypingMode(false);
+    }
+  };
 
   const handleSubmit = async (text: string) => {
-    // Create session
-    const session = await createSession(text);
-
-    // Start analysis in background (we'll fetch results on session page)
-    analyzeSession(session.id);
-
-    // Navigate to session page
-    navigate(`/session/${session.id}`);
+    try {
+      const session = await createSession(text);
+      analyzeSession(session.id);
+      navigate(`/session/${session.id}`);
+    } catch (error) {
+      console.error('Failed to create session:', error);
+    }
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      {/* Main content */}
-      <main className="flex-1 flex flex-col items-center justify-center p-6 max-w-2xl mx-auto w-full">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <Brain className="h-10 w-10 text-primary" />
-            <h1 className="text-3xl font-bold">Brain Dump</h1>
+    <div className="min-h-screen flex flex-col items-center justify-center p-6 relative overflow-hidden">
+      {/* Main Content Area */}
+      <main className="flex-1 flex flex-col items-center justify-center w-full max-w-md mx-auto z-10 transition-all duration-500 ease-in-out">
+        {/* Dynamic Header */}
+        <h1
+          className={cn(
+            'text-4xl font-bold text-center mb-16 transition-all duration-300',
+            isListening ? 'scale-90 opacity-80' : 'scale-100',
+          )}
+        >
+          {isListening ? "I'm listening..." : "What's on your mind?"}
+        </h1>
+
+        {/* Voice Trigger / Visualization */}
+        <div className="relative mb-12">
+          {/* Ripple Effects when listening */}
+          {isListening && (
+            <>
+              <div className="absolute inset-0 rounded-full bg-primary/20 animate-ping opacity-75 pointer-events-none" />
+              <div className="absolute inset-[-12px] rounded-full bg-primary/10 animate-pulse delay-75 pointer-events-none" />
+            </>
+          )}
+
+          <Button
+            size="lg"
+            variant="ghost"
+            className={cn(
+              'rounded-full w-24 h-24 flex items-center justify-center transition-all duration-300 shadow-xl',
+              isListening
+                ? 'bg-primary/20 text-primary border-2 border-primary/30'
+                : 'bg-white dark:bg-zinc-800 text-primary  hover:scale-105 border border-white/20 dark:border-white/10',
+            )}
+            onClick={toggleListening}
+          >
+            {isListening ? (
+              <AudioLines className="w-10 h-10 animate-pulse" />
+            ) : (
+              <Mic className="w-10 h-10" />
+            )}
+          </Button>
+
+          {/* Timer or Status Text */}
+          <div className="absolute -bottom-10 left-0 right-0 text-center">
+            <span className="text-sm font-medium text-muted-foreground">
+              {isListening ? 'Tap to stop' : 'Tap to speak'}
+            </span>
           </div>
-          <p className="text-muted-foreground text-lg">
-            Hey {user?.displayName?.split(' ')[0] || 'there'}! What&apos;s on
-            your mind?
-          </p>
-          <p className="text-sm text-muted-foreground mt-1">
-            Let it all out - no judgment, just support.
-          </p>
         </div>
 
-        {/* Input mode toggle */}
-        <div className="flex gap-2 mb-6">
-          <Button
-            variant={inputMode === 'text' ? 'default' : 'outline'}
-            onClick={() => setInputMode('text')}
-            size="sm"
-          >
-            Type it out
-          </Button>
-          <Button
-            variant={inputMode === 'voice' ? 'default' : 'outline'}
-            onClick={() => setInputMode('voice')}
-            size="sm"
-          >
-            Talk it out
-          </Button>
+        {/* Live Transcription Display */}
+        <div
+          className={cn(
+            'w-full max-w-sm min-h-[80px] transition-all duration-500 ease-out',
+            isListening || transcript
+              ? 'opacity-100 translate-y-0'
+              : 'opacity-0 translate-y-4',
+          )}
+        >
+          {(isListening || transcript) && (
+            <div className="relative px-6 py-4">
+              {/* Subtle gradient background */}
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/50 to-transparent rounded-2xl" />
+
+              {/* Transcription text */}
+              <p className="relative text-center text-lg leading-relaxed">
+                {transcript && (
+                  <span className="text-foreground">{transcript}</span>
+                )}
+                {interimTranscript && (
+                  <span className="text-muted-foreground/70 italic">
+                    {transcript ? ' ' : ''}
+                    {interimTranscript}
+                  </span>
+                )}
+                {isListening && !transcript && !interimTranscript && (
+                  <span className="text-muted-foreground/50 animate-pulse">
+                    Start speaking...
+                  </span>
+                )}
+              </p>
+
+              {/* Typing indicator dots when listening */}
+              {isListening && (transcript || interimTranscript) && (
+                <div className="flex justify-center gap-1 mt-3">
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary/60 animate-bounce [animation-delay:-0.3s]" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary/60 animate-bounce [animation-delay:-0.15s]" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary/60 animate-bounce" />
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
-        {/* Voice input (shows when voice mode active) */}
-        {inputMode === 'voice' && (
-          <div className="w-full mb-4">
-            <VoiceInput onTranscriptChange={handleTranscriptChange} />
+        {/* Text Input Toggle / Area */}
+        <div
+          className={cn(
+            'w-full transition-all duration-500 ease-in-out',
+            isTypingMode
+              ? 'opacity-100 translate-y-0'
+              : 'opacity-0 translate-y-10 pointer-events-none absolute bottom-0',
+          )}
+        >
+          <div className="glass-card p-4">
+            <TextInput
+              ref={textInputRef}
+              onSubmit={handleSubmit}
+              placeholder="Type your thoughts..."
+            />
           </div>
+        </div>
+
+        {/* Keyboard Toggle (only visible when not typing) */}
+        {!isTypingMode && !isListening && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="mt-8 rounded-full text-muted-foreground hover:text-primary transition-colors hover:bg-white/50"
+            onClick={() => setIsTypingMode(true)}
+          >
+            <Keyboard className="w-6 h-6" />
+          </Button>
         )}
 
-        {/* Text input (always visible, receives voice transcript) */}
-        <TextInput ref={textInputRef} onSubmit={handleSubmit} />
-
-        {/* Navigation links */}
-        <div className="mt-8 pt-8 border-t border-border w-full space-y-2">
-          <Link to="/sessions">
-            <Button variant="ghost" className="w-full gap-2">
-              <Clock className="h-5 w-5" />
-              View Session History
-            </Button>
-          </Link>
-          <Link to="/tips">
-            <Button variant="ghost" className="w-full gap-2">
-              <BookOpen className="h-5 w-5" />
-              View My Helpful Tips Library
-              <Sparkles className="h-4 w-4 text-primary" />
-            </Button>
-          </Link>
-        </div>
+        {/* Cancel Typing Mode */}
+        {isTypingMode && (
+          <Button
+            variant="ghost"
+            className="mt-4 text-sm text-muted-foreground"
+            onClick={() => setIsTypingMode(false)}
+          >
+            Cancel
+          </Button>
+        )}
       </main>
     </div>
   );

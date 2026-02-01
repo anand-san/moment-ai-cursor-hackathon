@@ -5,6 +5,7 @@ import { Outlet } from 'react-router-dom';
 import SignIn from '@/components/auth/SignIn';
 import { useAuth } from '@/context/auth/AuthContextProvider';
 import { FullScreenLoader } from '@/components/loader';
+import { BottomNav } from '@/components/layout/BottomNav';
 
 export const AppLayout = () => {
   const { signOut } = useAuth();
@@ -26,7 +27,7 @@ export const AppLayout = () => {
   }
   return (
     <>
-      <div className="flex absolute top-4 right-4 space-x-2">
+      <div className="flex absolute top-4 right-4 space-x-2 z-50">
         <ThemeToggle />
         <Button
           variant={'ghost'}
@@ -38,7 +39,11 @@ export const AppLayout = () => {
         </Button>
       </div>
 
-      <Outlet />
+      <div className="min-h-screen pb-20">
+        <Outlet />
+      </div>
+
+      <BottomNav />
     </>
   );
 };

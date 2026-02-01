@@ -60,7 +60,7 @@ export const TextInput = forwardRef<TextInputRef, TextInputProps>(
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
           disabled={disabled || isSubmitting}
-          className="w-full min-h-[200px] p-4 rounded-lg border border-input bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring resize-none"
+          className="w-full min-h-[200px] p-4 rounded-lg bg-transparent border-none text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-0 resize-none text-lg"
           aria-label="Brain dump text input"
         />
         <div className="flex justify-between items-center">
