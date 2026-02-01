@@ -7,9 +7,9 @@ import { getSession } from '@/api/sessions';
 import {
   Home,
   BookOpen,
-  CheckCircle2,
   AlertCircle,
   Sparkles,
+  ArrowLeft,
 } from 'lucide-react';
 import type { SessionWithId, Tip } from '@sandilya-stack/shared/types';
 
@@ -88,33 +88,43 @@ export default function SessionResult() {
 
   return (
     <div className="min-h-screen flex flex-col p-6 max-w-lg mx-auto relative z-10">
-      {/* Header */}
-      <div className="text-center mb-8">
-        <div className="flex items-center justify-center gap-2 mb-4">
-          <div className="p-4 bg-green-100 dark:bg-green-900/30 rounded-full">
-            <CheckCircle2 className="h-10 w-10 text-green-600" />
-          </div>
-        </div>
-        <h1 className="text-3xl font-bold mb-3">Session Complete!</h1>
-        <p className="text-muted-foreground text-lg">
-          {helpfulTips.length > 0
-            ? `You saved ${helpfulTips.length} helpful tip${helpfulTips.length > 1 ? 's' : ''} from this session.`
-            : 'No tips saved from this session.'}
-        </p>
+      {/* Back button */}
+      <div className="mb-4">
+        <Link to={`/session/${id}/tips`}>
+          <Button variant="ghost" size="sm" className="gap-2">
+            <ArrowLeft className="h-4 w-4" />
+            Back
+          </Button>
+        </Link>
       </div>
 
-      {/* Helpful tips */}
-      {helpfulTips.length > 0 && (
-        <div className="mb-8 rounded-2xl p-4 border border-white/10 bg-white/30 dark:bg-black/20">
-          <h2 className="text-lg font-semibold mb-4 flex items-center gap-2 justify-center">
-            <Sparkles className="h-5 w-5 text-primary" />
-            Your Helpful Tips
-          </h2>
-          <div className="space-y-4">
-            {helpfulTips.map(tip => (
-              <TipItem key={tip.id} tip={tip} />
-            ))}
+      {helpfulTips.length > 0 ? (
+        <>
+          {/* Description */}
+          <p className="text-muted-foreground text-lg text-center mb-6">
+            You saved {helpfulTips.length} helpful tip
+            {helpfulTips.length > 1 ? 's' : ''} from this session.
+          </p>
+
+          {/* Helpful tips */}
+          <div className="mb-8">
+            <h2 className="text-lg font-semibold mb-4 flex items-center gap-2 justify-center">
+              <Sparkles className="h-5 w-5 text-primary" />
+              Your Helpful Tips
+            </h2>
+            <div className="space-y-4">
+              {helpfulTips.map(tip => (
+                <TipItem key={tip.id} tip={tip} />
+              ))}
+            </div>
           </div>
+        </>
+      ) : (
+        /* No tips - center the message */
+        <div className="flex-1 flex items-center justify-center">
+          <p className="text-muted-foreground text-lg text-center">
+            No tips saved from this session.
+          </p>
         </div>
       )}
 

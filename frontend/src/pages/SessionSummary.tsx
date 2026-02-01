@@ -5,7 +5,7 @@ import { EmpathyResponse } from '@/components/tips/EmpathyResponse';
 import { IdentifiedProblems } from '@/components/tips/IdentifiedProblems';
 import { FullScreenLoader } from '@/components/loader';
 import { getSession, analyzeSession, regenerateTips } from '@/api/sessions';
-import { Home, AlertCircle, ArrowRight, RefreshCw, Loader2 } from 'lucide-react';
+import { Home, AlertCircle, ArrowRight, RefreshCw, Loader2, ArrowLeft } from 'lucide-react';
 import type { SessionWithId, Analysis } from '@sandilya-stack/shared/types';
 
 export default function SessionSummary() {
@@ -101,6 +101,19 @@ export default function SessionSummary() {
 
   return (
     <div className="min-h-screen flex flex-col p-6 max-w-lg mx-auto relative z-10">
+      {/* Back button */}
+      <div className="mb-4">
+        <Link to="/">
+          <Button variant="ghost" size="sm" className="gap-2">
+            <ArrowLeft className="h-4 w-4" />
+            Back
+          </Button>
+        </Link>
+      </div>
+
+      {/* Heading */}
+      <h2 className="text-xl font-semibold mb-6 text-center">Session Summary</h2>
+
       {/* Empathy Response */}
       <div className="mb-6 text-center">
         <EmpathyResponse message={analysis.empathy} />

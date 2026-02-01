@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { TipCard } from './TipCard';
 import { Button } from '@/components/ui/button';
-import { RefreshCw, Loader2, CheckCircle2 } from 'lucide-react';
+import { RefreshCw, Loader2 } from 'lucide-react';
 import type { Tip } from '@sandilya-stack/shared/types';
 
 interface TipStackProps {
@@ -53,11 +53,10 @@ export function TipStack({
 
   if (remainingTips.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-12 space-y-6">
-        <div className="flex items-center gap-2 text-green-600">
-          <CheckCircle2 className="h-8 w-8" />
-          <span className="text-xl font-medium">All tips reviewed!</span>
-        </div>
+      <div className="flex-1 flex flex-col items-center justify-center space-y-6">
+        <p className="text-muted-foreground text-lg text-center">
+          All tips reviewed!
+        </p>
         <Button
           variant="outline"
           onClick={handleRegenerate}
