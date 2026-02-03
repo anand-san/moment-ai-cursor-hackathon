@@ -1,2 +1,2 @@
-export { openai } from './client';
+export { gemini } from './client';
 export { analyzeText } from './analyzer';

@@ -1,6 +1,6 @@
 import { generateText, Output } from 'ai';
 import { z } from 'zod';
-import { openai } from './client';
+import { gemini } from './client';
 import type { Analysis, TagCounts, Tip } from '@sandilya-stack/shared/types';
 import { tipTagSchema, tipCategorySchema } from '@sandilya-stack/shared/types';
 
@@ -391,7 +391,7 @@ export async function analyzeText(
   tagCounts: TagCounts,
 ): Promise<Analysis> {
   const { output } = await generateText({
-    model: openai('gpt-4o'),
+    model: gemini('gemini-3-flash-preview'),
     output: Output.object({ schema: aiResponseSchema }),
     system: buildSystemPrompt(tagCounts),
     prompt: text,

@@ -1,6 +1,3 @@
-import { createOpenAI } from '@ai-sdk/openai';
-import env from '../../env';
+import { google } from '@ai-sdk/google';
 
-export const openai = createOpenAI({
-  apiKey: env.OPENAI_API_KEY,
-});
+export { google as gemini };
