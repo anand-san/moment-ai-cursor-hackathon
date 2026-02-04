@@ -14,6 +14,7 @@ const server = Bun.serve({
   port: ProcessEnv.PORT,
   hostname: '0.0.0.0',
   fetch: app.fetch,
+  idleTimeout: 120, // 2 minutes for AI analysis requests
 });
 
 console.log('server running', server.port);
