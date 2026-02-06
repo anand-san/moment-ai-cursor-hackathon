@@ -1,6 +1,26 @@
 import '@testing-library/jest-dom/vitest';
 import { vi } from 'vitest';
 
+// Mock Capacitor to return web platform by default
+vi.mock('@capacitor/core', () => ({
+  Capacitor: {
+    isNativePlatform: () => false,
+  },
+}));
+
+vi.mock('@capacitor-community/speech-recognition', () => ({
+  SpeechRecognition: {
+    available: vi.fn().mockResolvedValue({ available: false }),
+    start: vi.fn().mockResolvedValue({}),
+    stop: vi.fn().mockResolvedValue(undefined),
+    requestPermissions: vi
+      .fn()
+      .mockResolvedValue({ speechRecognition: 'granted' }),
+    addListener: vi.fn().mockResolvedValue({ remove: vi.fn() }),
+    removeAllListeners: vi.fn().mockResolvedValue(undefined),
+  },
+}));
+
 vi.stubEnv('VITE_FIREBASE_API_KEY', 'test-api-key');
 vi.stubEnv('VITE_FIREBASE_AUTH_DOMAIN', 'test.firebaseapp.com');
 vi.stubEnv('VITE_FIREBASE_PROJECT_ID', 'test-project');

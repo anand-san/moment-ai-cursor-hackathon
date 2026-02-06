@@ -1,8 +1,12 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { renderHook, act } from '@testing-library/react';
+import { renderHook, act, waitFor } from '@testing-library/react';
 import { useSpeechToText } from '@/hooks/useSpeechToText';
 
-describe('useSpeechToText', () => {
+// The global setup.ts mocks @capacitor/core with isNativePlatform => false
+// and @capacitor-community/speech-recognition as a no-op.
+// This means useSpeechToText resolves to the web implementation at module load.
+
+describe('useSpeechToText - Web Speech API (browser)', () => {
   let mockRecognitionInstance: {
     continuous: boolean;
     interimResults: boolean;
@@ -88,7 +92,6 @@ describe('useSpeechToText', () => {
   it('should reset transcript when resetTranscript is called', () => {
     const { result } = renderHook(() => useSpeechToText());
 
-    // Simulate some transcript being set
     act(() => {
       if (mockRecognitionInstance.onresult) {
         mockRecognitionInstance.onresult({

@@ -21,6 +21,7 @@
     "android": "bun run build && cap sync android && cap run android"
   },
   "dependencies": {
+    "@capacitor-community/speech-recognition": "^7.0.1",
     "@capacitor/android": "^8.0.2",
     "@capacitor/core": "^8.0.2",
     "@radix-ui/react-avatar": "^1.1.11",
