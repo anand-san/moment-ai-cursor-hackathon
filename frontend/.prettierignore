@@ -1,5 +1,6 @@
 /dist
 .prettierignore
 node_modules
+android
 CHANGELOG.md
 *.json

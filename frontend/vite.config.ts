@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     server: {
-      host: true,
+      host: process.env.CAPACITOR_DEV_HOST || true,
       port: 5173,
       strictPort: true,
       watch: {

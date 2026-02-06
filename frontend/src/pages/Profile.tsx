@@ -2,11 +2,7 @@ import { useAuth } from '@/context/auth/AuthContextProvider';
 import { useTheme } from '@/hooks/useTheme';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { LogOut, Sun, Moon, Monitor, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -70,7 +66,9 @@ export default function Profile() {
 
         {/* Theme Section */}
         <div className="p-4 rounded-2xl border border-white/10 bg-white/40 dark:bg-black/20">
-          <Label className="text-base font-semibold mb-4 block">Appearance</Label>
+          <Label className="text-base font-semibold mb-4 block">
+            Appearance
+          </Label>
           <div className="grid grid-cols-3 gap-3">
             {themeOptions.map(option => {
               const Icon = option.icon;

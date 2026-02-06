@@ -47,9 +47,7 @@ describe('AnalysisLoader', () => {
   it('should render quote text', () => {
     render(<AnalysisLoader />);
 
-    expect(
-      screen.getByText(`"${LOADING_QUOTES[0].text}"`),
-    ).toBeInTheDocument();
+    expect(screen.getByText(`"${LOADING_QUOTES[0].text}"`)).toBeInTheDocument();
   });
 
   it('should render author when provided', () => {

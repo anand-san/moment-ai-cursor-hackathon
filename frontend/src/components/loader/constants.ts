@@ -24,7 +24,10 @@ export const LOADING_QUOTES: LoadingQuote[] = [
     text: 'The present moment is filled with joy and happiness.',
     author: 'Thich Nhat Hanh',
   },
-  { text: 'Peace comes from within. Do not seek it without.', author: 'Buddha' },
+  {
+    text: 'Peace comes from within. Do not seek it without.',
+    author: 'Buddha',
+  },
   {
     text: 'Breathe. Let go. And remind yourself that this very moment is the only one you know you have for sure.',
   },

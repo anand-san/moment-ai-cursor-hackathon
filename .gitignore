@@ -178,3 +178,11 @@ todo.md
 temp_md/
 
 **/*.env
+
+# Capacitor Android build artifacts
+frontend/android/app/build/
+frontend/android/build/
+frontend/android/.gradle/
+frontend/android/local.properties
+frontend/android/*.iml
+frontend/android/.idea/

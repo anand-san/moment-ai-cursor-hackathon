@@ -55,9 +55,7 @@ describe('AppLayout - Auth-based Routing', () => {
 
     renderLayout();
 
-    expect(
-      await screen.findByText("What's on your mind?"),
-    ).toBeInTheDocument();
+    expect(await screen.findByText("What's on your mind?")).toBeInTheDocument();
   });
 
   it('should show bottom navigation when user is logged in', async () => {

@@ -24,12 +24,14 @@ app.use(
   '*',
   cors({
     origin: origin => {
-      {
-        if (origin.endsWith('.sandilya.dev')) {
-          return origin;
-        }
-        return env.FRONTEND_URL;
+      if (origin.endsWith('.sandilya.dev')) {
+        return origin;
       }
+      // Allow Capacitor Android/iOS app
+      if (origin === 'https://localhost') {
+        return origin;
+      }
+      return env.FRONTEND_URL;
     },
     allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowHeaders: [
