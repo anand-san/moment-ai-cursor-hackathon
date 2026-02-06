@@ -52,7 +52,7 @@ describe('Preferences API', () => {
 
     it('should return existing tag counts for user with preferences', async () => {
       // Seed existing preferences
-      seedFirestore(`users/${testUserId}`, {
+      seedFirestore(`users/${testUserId}/preferences`, {
         preferences: {
           tagCounts: {
             break: 5,

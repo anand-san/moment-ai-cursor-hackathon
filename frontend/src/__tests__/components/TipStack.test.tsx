@@ -92,9 +92,6 @@ describe('TipStack', () => {
     render(<TipStack {...defaultProps} tips={[]} />);
 
     expect(screen.getByText('All tips reviewed!')).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', { name: /Get different tips/i }),
-    ).toBeInTheDocument();
   });
 
   it('should show loading state when regenerating', async () => {
@@ -107,18 +104,17 @@ describe('TipStack', () => {
     render(
       <TipStack
         {...defaultProps}
-        tips={[]}
         onRegenerate={() => pendingRegenerate}
       />,
     );
 
     const regenerateButton = screen.getByRole('button', {
-      name: /Get different tips/i,
+      name: /Not resonating\? Get different tips/i,
     });
     await user.click(regenerateButton);
 
     await waitFor(() => {
-      expect(screen.getByText(/Generating new tips/i)).toBeInTheDocument();
+      expect(screen.getByText(/Generating/i)).toBeInTheDocument();
     });
 
     resolveRegenerate!();

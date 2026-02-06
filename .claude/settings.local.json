@@ -1,5 +1,11 @@
 {
   "permissions": {
-    "allow": ["Bash(test:*)"]
+    "allow": [
+      "Bash(test:*)",
+      "Bash(npx vitest:*)",
+      "Bash(grep:*)",
+      "Bash(bun test:*)",
+      "Bash(bun run test:server:*)"
+    ]
   }
 }

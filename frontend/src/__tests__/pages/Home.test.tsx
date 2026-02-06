@@ -21,12 +21,10 @@ vi.mock('react-router-dom', async () => {
 
 vi.mock('@/api/sessions', () => ({
   createSession: vi.fn(),
-  analyzeSession: vi.fn(),
 }));
 
-import { createSession, analyzeSession } from '@/api/sessions';
+import { createSession } from '@/api/sessions';
 const mockCreateSession = vi.mocked(createSession);
-const mockAnalyzeSession = vi.mocked(analyzeSession);
 
 function renderHome() {
   return render(
@@ -45,11 +43,12 @@ describe('Home Page - Brain Dump', () => {
     vi.clearAllMocks();
   });
 
-  it('should display brain dump title and greeting', async () => {
+  it('should display main title', async () => {
     renderHome();
 
-    expect(await screen.findByText('Brain Dump')).toBeInTheDocument();
-    expect(screen.getByText(/Hey Test/)).toBeInTheDocument();
+    expect(
+      await screen.findByText("What's on your mind?"),
+    ).toBeInTheDocument();
   });
 
   it('should display text input area', async () => {
@@ -60,14 +59,12 @@ describe('Home Page - Brain Dump', () => {
     ).toBeInTheDocument();
   });
 
-  it('should display input mode toggle buttons', async () => {
+  it('should display voice and keyboard toggle', async () => {
     renderHome();
 
+    // Voice mode is default - mic button and keyboard toggle should be present
     expect(
-      await screen.findByRole('button', { name: /Type it out/i }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', { name: /Talk it out/i }),
+      await screen.findByText('Tap to speak'),
     ).toBeInTheDocument();
   });
 
@@ -79,14 +76,11 @@ describe('Home Page - Brain Dump', () => {
     ).toBeInTheDocument();
   });
 
-  it('should display tips library link', async () => {
+  it('should display cancel button in typing mode', async () => {
     renderHome();
 
-    expect(
-      await screen.findByRole('button', {
-        name: /View My Helpful Tips Library/i,
-      }),
-    ).toBeInTheDocument();
+    // Cancel button is rendered (in typing mode overlay)
+    expect(await screen.findByText('Cancel')).toBeInTheDocument();
   });
 
   it('should enable submit button when text is entered', async () => {
@@ -110,11 +104,6 @@ describe('Home Page - Brain Dump', () => {
       text: 'I feel overwhelmed today',
       createdAt: new Date().toISOString(),
     });
-    mockAnalyzeSession.mockResolvedValueOnce({
-      empathy: 'I hear you',
-      identifiedProblems: [],
-      tips: [],
-    });
 
     renderHome();
 
@@ -128,10 +117,6 @@ describe('Home Page - Brain Dump', () => {
       expect(mockCreateSession).toHaveBeenCalledWith(
         'I feel overwhelmed today',
       );
-    });
-
-    await waitFor(() => {
-      expect(mockAnalyzeSession).toHaveBeenCalledWith('session-123');
     });
 
     await waitFor(() => {
@@ -155,11 +140,6 @@ describe('Home Page - Brain Dump', () => {
       resolvePromise = resolve;
     });
     mockCreateSession.mockReturnValueOnce(pendingPromise);
-    mockAnalyzeSession.mockResolvedValueOnce({
-      empathy: 'I hear you',
-      identifiedProblems: [],
-      tips: [],
-    });
 
     renderHome();
 

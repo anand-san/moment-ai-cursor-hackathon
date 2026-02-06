@@ -1,6 +1,6 @@
 import { mock } from 'bun:test';
 import { mockAuth, mockFirestore, MockTimestamp } from './mocks/firebase-admin';
-import { MockOpenAI } from './mocks/openai';
+import { mockGenerateText, MockOutput, mockGemini } from './mocks/openai';
 
 // Mock the lightweight firebase services
 mock.module('../services/firebase', () => ({
@@ -25,7 +25,13 @@ mock.module('../services/firestoreRest', () => ({
   Timestamp: MockTimestamp,
 }));
 
-// Mock OpenAI
-mock.module('openai', () => ({
-  default: MockOpenAI,
+// Mock Vercel AI SDK
+mock.module('ai', () => ({
+  generateText: mockGenerateText,
+  Output: MockOutput,
+}));
+
+// Mock Google Gemini provider
+mock.module('@ai-sdk/google', () => ({
+  google: mockGemini,
 }));

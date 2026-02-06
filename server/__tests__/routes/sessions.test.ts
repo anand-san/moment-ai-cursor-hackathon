@@ -163,7 +163,7 @@ describe('Sessions API', () => {
       });
 
       // Seed default preferences
-      seedFirestore(`users/${testUserId}`, {
+      seedFirestore(`users/${testUserId}/preferences`, {
         preferences: {
           tagCounts: {
             break: 0,
@@ -247,7 +247,7 @@ describe('Sessions API', () => {
       });
 
       // Seed preferences
-      seedFirestore(`users/${testUserId}`, {
+      seedFirestore(`users/${testUserId}/preferences`, {
         preferences: {
           tagCounts: {
             break: 0,
@@ -282,7 +282,7 @@ describe('Sessions API', () => {
       expect(body.tagCount).toBe(1);
 
       // Verify preferences were updated
-      const prefs = getFirestoreData(`users/${testUserId}`);
+      const prefs = getFirestoreData(`users/${testUserId}/preferences`);
       expect(
         (prefs['preferences'] as { tagCounts: { break: number } }).tagCounts
           .break,
@@ -395,7 +395,7 @@ describe('Sessions API', () => {
       });
 
       // Seed preferences
-      seedFirestore(`users/${testUserId}`, {
+      seedFirestore(`users/${testUserId}/preferences`, {
         preferences: {
           tagCounts: {
             break: 1,
