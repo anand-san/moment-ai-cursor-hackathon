@@ -17,9 +17,9 @@ app.onError((err: unknown, ctx: Context) => {
   return ctx.json({ error: 'Something went horribly wrong' }, 500);
 });
 
-// Middlwares
+// Middlewares — CORS must come before auth so preflight OPTIONS requests
+// get proper headers without needing an auth token
 app.use('*', logger());
-app.use('/api/*', authenticateUser);
 app.use(
   '*',
   cors({
@@ -47,6 +47,7 @@ app.use(
     credentials: true,
   }),
 );
+app.use('/api/*', authenticateUser);
 
 const apiRoutes = app
   .get('/health', c => c.text('OK', 201))
