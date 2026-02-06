@@ -1,15 +1,8 @@
-import { Capacitor } from '@capacitor/core';
-
-export const isNative = Capacitor.isNativePlatform();
-
 /**
- * Returns the app's base URL.
- * On native (Capacitor), window.location.origin is https://localhost which is
- * unreachable outside the WebView — so we fall back to VITE_APP_URL.
+ * Returns the app's public URL for use in redirects (e.g. email auth links).
+ * Inside the Capacitor WebView, window.location.origin is https://localhost
+ * which is unreachable outside the app — so we always use VITE_APP_URL.
  */
 export function getAppUrl(): string {
-  if (isNative) {
-    return import.meta.env.VITE_APP_URL ?? window.location.origin;
-  }
-  return window.location.origin;
+  return import.meta.env.VITE_APP_URL ?? window.location.origin;
 }

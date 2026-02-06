@@ -26,7 +26,7 @@ describe('useSendEmailLink', () => {
       expect.anything(),
       'test@example.com',
       expect.objectContaining({
-        url: expect.stringContaining(window.location.origin),
+        url: expect.stringContaining('https://momentai.sandilya.dev'),
         handleCodeInApp: true,
       }),
     );

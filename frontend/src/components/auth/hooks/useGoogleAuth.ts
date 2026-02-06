@@ -1,12 +1,11 @@
 import {
   AuthError,
   GoogleAuthProvider,
-  signInWithPopup,
   signInWithCredential,
 } from 'firebase/auth';
+import { FirebaseAuthentication } from '@capacitor-firebase/authentication';
 import { useCallback, useState } from 'react';
 import { auth } from '@/lib/firebase';
-import { isNative } from '@/utils/platform';
 
 interface UseGoogleAuthProps {
   onError: (error: AuthError) => void;
@@ -20,21 +19,14 @@ export const useGoogleAuth = ({ onError, onSuccess }: UseGoogleAuthProps) => {
     setIsLoading(true);
 
     try {
-      if (isNative) {
-        const { FirebaseAuthentication } = await import(
-          '@capacitor-firebase/authentication'
-        );
-        const result = await FirebaseAuthentication.signInWithGoogle();
-        const credential = GoogleAuthProvider.credential(
-          result.credential?.idToken,
-        );
-        await signInWithCredential(auth, credential);
-      } else {
-        const provider = new GoogleAuthProvider();
-        await signInWithPopup(auth, provider);
-      }
+      const result = await FirebaseAuthentication.signInWithGoogle();
+      const credential = GoogleAuthProvider.credential(
+        result.credential?.idToken,
+      );
+      await signInWithCredential(auth, credential);
       onSuccess();
     } catch (error) {
+      console.error('[GoogleAuth] sign-in failed:', error);
       onError(error as AuthError);
     } finally {
       setIsLoading(false);
