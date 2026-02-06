@@ -102,10 +102,7 @@ describe('TipStack', () => {
     });
 
     render(
-      <TipStack
-        {...defaultProps}
-        onRegenerate={() => pendingRegenerate}
-      />,
+      <TipStack {...defaultProps} onRegenerate={() => pendingRegenerate} />,
     );
 
     const regenerateButton = screen.getByRole('button', {

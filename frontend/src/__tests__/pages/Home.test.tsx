@@ -46,9 +46,7 @@ describe('Home Page - Brain Dump', () => {
   it('should display main title', async () => {
     renderHome();
 
-    expect(
-      await screen.findByText("What's on your mind?"),
-    ).toBeInTheDocument();
+    expect(await screen.findByText("What's on your mind?")).toBeInTheDocument();
   });
 
   it('should display text input area', async () => {
@@ -63,9 +61,7 @@ describe('Home Page - Brain Dump', () => {
     renderHome();
 
     // Voice mode is default - mic button and keyboard toggle should be present
-    expect(
-      await screen.findByText('Tap to speak'),
-    ).toBeInTheDocument();
+    expect(await screen.findByText('Tap to speak')).toBeInTheDocument();
   });
 
   it('should display submit button', async () => {

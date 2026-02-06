@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "dev.sandilya.momentai",
+      "sha256_cert_fingerprints": [
+        "98:8F:DE:49:9E:20:22:E2:C6:32:36:01:35:F8:22:21:0B:45:26:70:7D:FA:5B:58:5F:04:B6:6D:D8:A7:48:5F"
+      ]
+    }
+  }
+]

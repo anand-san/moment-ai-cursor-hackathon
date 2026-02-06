@@ -8,6 +8,20 @@ vi.mock('@capacitor/core', () => ({
   },
 }));
 
+vi.mock('@capacitor/app', () => ({
+  App: {
+    addListener: vi.fn().mockResolvedValue({ remove: vi.fn() }),
+  },
+}));
+
+vi.mock('@capacitor-firebase/authentication', () => ({
+  FirebaseAuthentication: {
+    signInWithGoogle: vi.fn().mockResolvedValue({
+      credential: { idToken: 'mock-id-token' },
+    }),
+  },
+}));
+
 vi.mock('@capacitor-community/speech-recognition', () => ({
   SpeechRecognition: {
     available: vi.fn().mockResolvedValue({ available: false }),
@@ -21,6 +35,7 @@ vi.mock('@capacitor-community/speech-recognition', () => ({
   },
 }));
 
+vi.stubEnv('VITE_APP_URL', 'https://momentai.sandilya.dev');
 vi.stubEnv('VITE_FIREBASE_API_KEY', 'test-api-key');
 vi.stubEnv('VITE_FIREBASE_AUTH_DOMAIN', 'test.firebaseapp.com');
 vi.stubEnv('VITE_FIREBASE_PROJECT_ID', 'test-project');
@@ -39,8 +54,11 @@ vi.mock('firebase/auth', async () => {
     getAuth: vi.fn(() => mockAuth),
     onAuthStateChanged: mockOnAuthStateChanged,
     signInWithPopup: vi.fn(),
+    signInWithCredential: vi.fn(),
     signOut: vi.fn(() => Promise.resolve()),
-    GoogleAuthProvider: vi.fn(),
+    GoogleAuthProvider: Object.assign(vi.fn(), {
+      credential: vi.fn().mockReturnValue({ providerId: 'google.com' }),
+    }),
     sendSignInLinkToEmail: vi.fn(() => Promise.resolve()),
     isSignInWithEmailLink: vi.fn(() => false),
     signInWithEmailLink: vi.fn(),

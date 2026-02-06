@@ -186,3 +186,4 @@ frontend/android/.gradle/
 frontend/android/local.properties
 frontend/android/*.iml
 frontend/android/.idea/
+frontend/android/**/google-services.json

@@ -64,6 +64,21 @@ export const useEmailLinkAuth = ({
     }
   }, [completeSignIn, onEmailRequired]);
 
+  const handleEmailLinkFromUrl = useCallback(
+    async (url: string) => {
+      if (isSignInWithEmailLink(auth, url)) {
+        const email = window.localStorage.getItem('emailForSignIn');
+        if (!email) {
+          setPendingEmailLink(url);
+          onEmailRequired();
+          return;
+        }
+        await completeSignIn(email, url);
+      }
+    },
+    [completeSignIn, onEmailRequired],
+  );
+
   const submitEmailForLink = useCallback(
     async (email: string) => {
       if (pendingEmailLink) {
@@ -75,6 +90,7 @@ export const useEmailLinkAuth = ({
 
   return {
     handleEmailLink,
+    handleEmailLinkFromUrl,
     submitEmailForLink,
     isLoading,
     needsEmailConfirmation: pendingEmailLink !== null,

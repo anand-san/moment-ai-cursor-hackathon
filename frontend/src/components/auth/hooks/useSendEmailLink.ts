@@ -1,6 +1,7 @@
 import { AuthError, sendSignInLinkToEmail } from 'firebase/auth';
 import { useState } from 'react';
 import { auth } from '@/lib/firebase';
+import { getAppUrl } from '@/utils/platform';
 
 interface UseSendEmailLinkProps {
   onError: (error: AuthError) => void;
@@ -17,7 +18,7 @@ export const useSendEmailLink = ({
     setIsLoading(true);
 
     const actionCodeSettings = {
-      url: window.location.origin + window.location.pathname,
+      url: getAppUrl() + window.location.pathname,
       handleCodeInApp: true,
     };
 

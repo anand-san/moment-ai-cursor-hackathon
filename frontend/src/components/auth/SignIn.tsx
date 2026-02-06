@@ -11,6 +11,7 @@ import { useEmailLinkAuth } from '@/components/auth/hooks/useEmailLinkAuth';
 import { useGoogleAuth } from '@/components/auth/hooks/useGoogleAuth';
 import { useSendEmailLink } from '@/components/auth/hooks/useSendEmailLink';
 import { isValidEmail } from '@/utils/isValidEmail';
+import { useDeepLinkAuth } from '@/hooks/useDeepLinkAuth';
 
 export default function SignIn() {
   const { isLoading: authLoading } = useAuth();
@@ -22,6 +23,7 @@ export default function SignIn() {
 
   const {
     handleEmailLink,
+    handleEmailLinkFromUrl,
     submitEmailForLink,
     isLoading: emailLinkLoading,
     needsEmailConfirmation,
@@ -43,6 +45,8 @@ export default function SignIn() {
       setSentEmailAddress(email);
     },
   });
+
+  useDeepLinkAuth(handleEmailLinkFromUrl);
 
   const handleAuthCallbacks = useCallback(async () => {
     try {
