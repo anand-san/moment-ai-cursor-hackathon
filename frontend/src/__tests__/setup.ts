@@ -37,6 +37,25 @@ vi.mock('@capacitor-community/speech-recognition', () => ({
   },
 }));
 
+vi.mock('@capacitor/haptics', () => ({
+  Haptics: {
+    impact: vi.fn().mockResolvedValue(undefined),
+  },
+  ImpactStyle: {
+    Light: 'LIGHT',
+    Medium: 'MEDIUM',
+    Heavy: 'HEAVY',
+  },
+}));
+
+vi.mock('@capacitor/local-notifications', () => ({
+  LocalNotifications: {
+    checkPermissions: vi.fn().mockResolvedValue({ display: 'granted' }),
+    requestPermissions: vi.fn().mockResolvedValue({ display: 'granted' }),
+    schedule: vi.fn().mockResolvedValue(undefined),
+  },
+}));
+
 vi.stubEnv('VITE_APP_URL', 'https://momentai.sandilya.dev');
 vi.stubEnv('VITE_FIREBASE_API_KEY', 'test-api-key');
 vi.stubEnv('VITE_FIREBASE_AUTH_DOMAIN', 'test.firebaseapp.com');

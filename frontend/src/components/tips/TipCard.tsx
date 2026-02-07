@@ -2,6 +2,9 @@ import { useState } from 'react';
 import { motion, useMotionValue, useTransform, PanInfo } from 'framer-motion';
 import type { Tip } from '@sandilya-stack/shared/types';
 import { Timer, Bell, MessageSquare, Bookmark, Clock } from 'lucide-react';
+import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
+import { runTipAction, triggerSwipeHaptic } from '@/lib/nativeTipActions';
 
 interface TipCardProps {
   tip: Tip;
@@ -15,6 +18,7 @@ export function TipCard({ tip, onSwipe, isTop }: TipCardProps) {
   const [exitDirection, setExitDirection] = useState<'left' | 'right' | null>(
     null,
   );
+  const [isActionLoading, setIsActionLoading] = useState(false);
   const x = useMotionValue(0);
 
   // Transform x position to rotation (tilt effect)
@@ -42,16 +46,37 @@ export function TipCard({ tip, onSwipe, isTop }: TipCardProps) {
   const handleDragEnd = (_: unknown, info: PanInfo) => {
     if (info.offset.x > SWIPE_THRESHOLD) {
       setExitDirection('right');
+      void triggerSwipeHaptic('right');
       onSwipe('right');
     } else if (info.offset.x < -SWIPE_THRESHOLD) {
       setExitDirection('left');
+      void triggerSwipeHaptic('left');
       onSwipe('left');
     }
   };
 
-  const handleActionClick = () => {
-    // Placeholder action handlers - log for now
-    console.log(`Action clicked: ${tip.actionType} for tip ${tip.id}`);
+  const handleActionClick = async () => {
+    if (isActionLoading) {
+      return;
+    }
+
+    setIsActionLoading(true);
+    try {
+      const result = await runTipAction(tip);
+      if (result.status === 'error') {
+        toast.error(result.title, { description: result.description });
+        return;
+      }
+
+      if (result.status === 'success') {
+        toast.success(result.title, { description: result.description });
+        return;
+      }
+
+      toast(result.title, { description: result.description });
+    } finally {
+      setIsActionLoading(false);
+    }
   };
 
   const categoryColors = {
@@ -116,9 +141,12 @@ export function TipCard({ tip, onSwipe, isTop }: TipCardProps) {
 
           {/* Action button (placeholder) */}
           {ActionIcon && (
-            <button
+            <Button
+              type="button"
+              variant="glass-outline"
               onClick={handleActionClick}
-              className="mt-4 flex items-center gap-2 px-4 py-2 rounded-full bg-white/30 dark:bg-white/10 backdrop-blur-sm border border-white/20 dark:border-white/10 text-foreground hover:bg-white/40 dark:hover:bg-white/15 transition-all"
+              disabled={isActionLoading}
+              className="mt-4 rounded-full"
             >
               <ActionIcon className="h-4 w-4" />
               <span className="text-sm font-medium capitalize">
@@ -127,7 +155,7 @@ export function TipCard({ tip, onSwipe, isTop }: TipCardProps) {
                 {tip.actionType === 'message' && 'Send Message'}
                 {tip.actionType === 'save' && 'Save Tip'}
               </span>
-            </button>
+            </Button>
           )}
         </div>
 

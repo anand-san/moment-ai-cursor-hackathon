@@ -28,9 +28,58 @@ export default defineConfig(({ mode }) => {
       outDir: '../dist/frontend',
       rollupOptions: {
         output: {
-          manualChunks: {
-            vendor: ['react', 'react-dom'],
-            router: ['react-router-dom'],
+          manualChunks(id) {
+            if (!id.includes('node_modules')) {
+              return;
+            }
+
+            if (
+              id.includes('/react/') ||
+              id.includes('/react-dom/') ||
+              id.includes('/scheduler/')
+            ) {
+              return 'react-vendor';
+            }
+
+            if (id.includes('/react-router-dom/')) {
+              return 'router';
+            }
+
+            if (id.includes('/firebase/')) {
+              return 'firebase';
+            }
+
+            if (id.includes('/framer-motion/')) {
+              return 'motion';
+            }
+
+            if (
+              id.includes('/@capacitor/') ||
+              id.includes('/@capacitor-community/') ||
+              id.includes('/@capacitor-firebase/')
+            ) {
+              return 'capacitor';
+            }
+
+            if (id.includes('/@radix-ui/')) {
+              return 'radix';
+            }
+
+            if (id.includes('/lucide-react/')) {
+              return 'icons';
+            }
+
+            if (id.includes('/hono/')) {
+              return 'api-client';
+            }
+
+            if (id.includes('/sonner/')) {
+              return 'ui-feedback';
+            }
+
+            if (id.includes('/@sentry/')) {
+              return 'sentry';
+            }
           },
         },
       },

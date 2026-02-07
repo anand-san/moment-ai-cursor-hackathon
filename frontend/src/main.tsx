@@ -4,12 +4,14 @@ import './index.css';
 import App from './App.tsx';
 import { AuthProvider } from './context/auth/AuthContextProvider.tsx';
 import { ThemeProvider } from './context/theme/ThemeProvider.tsx';
+import { Toaster } from './components/ui/sonner.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <AuthProvider>
       <ThemeProvider defaultTheme="light" storageKey="ui-theme">
         <App />
+        <Toaster />
       </ThemeProvider>
     </AuthProvider>
   </StrictMode>,

@@ -1,5 +1,4 @@
 import { Outlet } from 'react-router-dom';
-import { AnimatePresence } from 'framer-motion';
 import SignIn from '@/components/auth/SignIn';
 import { useAuth } from '@/context/auth/AuthContextProvider';
 import { FullScreenLoader } from '@/components/loader';
@@ -19,9 +18,7 @@ export const AppLayout = () => {
   return (
     <>
       <div className="min-h-dvh pb-nav-safe">
-        <AnimatePresence mode="wait">
-          <Outlet />
-        </AnimatePresence>
+        <Outlet />
       </div>
 
       <BottomNav />

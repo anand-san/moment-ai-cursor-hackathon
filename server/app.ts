@@ -24,6 +24,10 @@ app.use(
   '*',
   cors({
     origin: origin => {
+      if (!origin) {
+        return env.FRONTEND_URL;
+      }
+
       if (origin.endsWith('.sandilya.dev')) {
         return origin;
       }
