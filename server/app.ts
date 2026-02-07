@@ -20,6 +20,26 @@ app.onError((err: unknown, ctx: Context) => {
 // Middlewares — CORS must come before auth so preflight OPTIONS requests
 // get proper headers without needing an auth token
 app.use('*', logger());
+app.use('/api/*', async (c, next) => {
+  const origin = c.req.header('origin') ?? 'none';
+  const host = c.req.header('host') ?? 'none';
+  const xForwardedHost = c.req.header('x-forwarded-host') ?? 'none';
+  const xForwardedProto = c.req.header('x-forwarded-proto') ?? 'none';
+  const userAgent = c.req.header('user-agent') ?? 'none';
+  const uaLower = userAgent.toLowerCase();
+  const isLikelyNative =
+    origin === 'https://localhost' ||
+    origin === 'capacitor://localhost' ||
+    uaLower.includes('capacitor') ||
+    uaLower.includes('android') ||
+    uaLower.includes('; wv');
+
+  console.log(
+    `[api-debug] method=${c.req.method} path=${c.req.path} origin=${origin} host=${host} x-forwarded-host=${xForwardedHost} x-forwarded-proto=${xForwardedProto} likely-native=${isLikelyNative}`,
+  );
+
+  await next();
+});
 app.use(
   '*',
   cors({
