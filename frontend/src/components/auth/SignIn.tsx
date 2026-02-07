@@ -76,7 +76,7 @@ export default function SignIn() {
 
   if (authLoading || emailLinkLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-dvh flex items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
@@ -84,12 +84,12 @@ export default function SignIn() {
 
   if (emailSent) {
     return (
-      <div className="min-h-screen">
-        <div className="absolute top-4 right-4">
+      <div className="min-h-dvh">
+        <div className="absolute top-safe-offset right-4">
           <ThemeToggle />
         </div>
 
-        <div className="flex items-center justify-center min-h-screen px-4">
+        <div className="flex items-center justify-center min-h-dvh px-4">
           <div className="w-full max-w-md">
             <div className="bg-card rounded-lg border shadow-lg p-8 text-center space-y-6">
               <div className="flex justify-center">
@@ -133,12 +133,12 @@ export default function SignIn() {
   }
 
   return (
-    <div className="min-h-screen">
-      <div className="absolute top-4 right-4">
+    <div className="min-h-dvh">
+      <div className="absolute top-safe-offset right-4">
         <ThemeToggle />
       </div>
 
-      <div className="flex items-center justify-center min-h-screen px-4">
+      <div className="flex items-center justify-center min-h-dvh px-4">
         <div className="w-full max-w-md">
           <div className="bg-card rounded-lg border shadow-lg p-8 text-center space-y-6">
             <div className="flex justify-center">

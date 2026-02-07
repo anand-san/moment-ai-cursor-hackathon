@@ -4,13 +4,15 @@ import { vi } from 'vitest';
 // Mock Capacitor to return web platform by default
 vi.mock('@capacitor/core', () => ({
   Capacitor: {
-    isNativePlatform: () => false,
+    isNativePlatform: vi.fn(() => false),
   },
 }));
 
 vi.mock('@capacitor/app', () => ({
   App: {
     addListener: vi.fn().mockResolvedValue({ remove: vi.fn() }),
+    getLaunchUrl: vi.fn().mockResolvedValue({ url: undefined }),
+    exitApp: vi.fn(),
   },
 }));
 

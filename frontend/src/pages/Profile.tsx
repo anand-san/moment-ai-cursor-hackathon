@@ -27,7 +27,7 @@ export default function Profile() {
   };
 
   return (
-    <div className="h-[calc(100vh-5rem)] flex flex-col p-6 max-w-lg mx-auto relative z-10">
+    <div className="h-[calc(100dvh-5rem)] flex flex-col p-6 max-w-lg mx-auto relative z-10">
       {/* Header */}
       <div className="flex-shrink-0 pb-6">
         <p className="text-muted-foreground text-center">

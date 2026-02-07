@@ -11,7 +11,7 @@ interface FullScreenLoaderProps {
 }
 
 export const FullScreenLoader = ({ message }: FullScreenLoaderProps) => (
-  <div className="h-screen flex flex-col justify-center items-center">
+  <div className="h-dvh flex flex-col justify-center items-center">
     <Loader2 className="animate-spin" />
     {message && <p className="text-muted-foreground">{message}</p>}
   </div>

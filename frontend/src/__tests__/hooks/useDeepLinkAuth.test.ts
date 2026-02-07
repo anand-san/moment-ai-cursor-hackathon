@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { App } from '@capacitor/app';
+import { Capacitor } from '@capacitor/core';
 import { useDeepLinkAuth } from '@/hooks/useDeepLinkAuth';
 
 type UrlOpenCallback = (data: { url: string }) => void;
@@ -11,6 +12,8 @@ describe('useDeepLinkAuth', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     capturedCallback = null;
+    vi.mocked(Capacitor.isNativePlatform).mockReturnValue(true);
+    vi.mocked(App.getLaunchUrl).mockResolvedValue({ url: undefined } as never);
     vi.mocked(App.addListener).mockImplementation(
       (_event: string, cb: UrlOpenCallback) => {
         capturedCallback = cb;
@@ -50,6 +53,17 @@ describe('useDeepLinkAuth', () => {
     );
   });
 
+  it('should call onAuthLink when app is launched from an auth URL', async () => {
+    const launchUrl = 'https://momentai.sandilya.dev/?apiKey=abc&oobCode=123';
+    vi.mocked(App.getLaunchUrl).mockResolvedValue({ url: launchUrl } as never);
+    const onAuthLink = vi.fn();
+    renderHook(() => useDeepLinkAuth(onAuthLink));
+
+    await waitFor(() => {
+      expect(onAuthLink).toHaveBeenCalledWith(launchUrl);
+    });
+  });
+
   it('should not call onAuthLink when URL has no apiKey', async () => {
     const onAuthLink = vi.fn();
     renderHook(() => useDeepLinkAuth(onAuthLink));
@@ -81,5 +95,19 @@ describe('useDeepLinkAuth', () => {
     unmount();
 
     expect(removeFn).toHaveBeenCalled();
+  });
+
+  it('should not register listeners on web', async () => {
+    vi.mocked(Capacitor.isNativePlatform).mockReturnValue(false);
+    const onAuthLink = vi.fn();
+
+    renderHook(() => useDeepLinkAuth(onAuthLink));
+
+    await waitFor(() => {
+      expect(Capacitor.isNativePlatform).toHaveBeenCalled();
+    });
+
+    expect(App.addListener).not.toHaveBeenCalled();
+    expect(App.getLaunchUrl).not.toHaveBeenCalled();
   });
 });

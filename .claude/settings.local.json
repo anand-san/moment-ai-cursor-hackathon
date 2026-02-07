@@ -5,7 +5,10 @@
       "Bash(npx vitest:*)",
       "Bash(grep:*)",
       "Bash(bun test:*)",
-      "Bash(bun run test:server:*)"
+      "Bash(bun run test:server:*)",
+      "Bash(ls:*)",
+      "Bash(bun add:*)",
+      "Bash(bun run test:frontend:*)"
     ]
   }
 }

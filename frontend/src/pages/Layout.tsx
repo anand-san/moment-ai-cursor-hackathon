@@ -18,7 +18,7 @@ export const AppLayout = () => {
 
   return (
     <>
-      <div className="min-h-screen pb-20">
+      <div className="min-h-dvh pb-nav-safe">
         <AnimatePresence mode="wait">
           <Outlet />
         </AnimatePresence>

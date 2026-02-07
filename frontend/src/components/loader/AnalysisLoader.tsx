@@ -12,7 +12,7 @@ export const AnalysisLoader = () => {
   const [content] = useState<LoadingContent>(() => getRandomLoadingContent());
 
   return (
-    <div className="h-screen flex flex-col justify-center items-center gap-6 px-6">
+    <div className="h-dvh flex flex-col justify-center items-center gap-6 px-6">
       <motion.img
         src={content.image}
         alt="Loading"
